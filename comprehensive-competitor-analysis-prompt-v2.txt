@@ -1,0 +1,118 @@
+# Comprehensive Competitor Analysis Prompt - Version 2
+
+Based on the extracted content from the company's website, please provide a detailed analysis of the organization covering the following aspects. For each section, adhere to these overarching principles:
+
+- Use precise language, distinguishing between stated facts and inferences
+- Directly quote important or ambiguous claims to preserve context
+- Clearly differentiate between verified information and marketing claims
+- Note any absence of expected information for the industry
+- Highlight areas where independent verification is mentioned or absent
+
+1. Company Overview
+   - Stated history and background
+   - Explicitly mentioned mission and vision statements
+   - Key leadership and team structure as presented on the website
+
+2. Product/Service Offerings
+   - Main product or platform name as officially stated
+   - Detailed list of features and capabilities, noting which are:
+     * Clearly described as current offerings
+     * Mentioned as upcoming or in development
+     * Ambiguously presented without clear timeline
+   - Claimed unique selling propositions
+   - Product architecture and technical specifications (if explicitly provided)
+
+3. Target Market and Customer Base
+   - Primary industries mentioned as served
+   - Explicitly stated target business sizes (SMB, Enterprise, etc.)
+   - Listed clients or case studies, noting if they are presented as typical or exceptional
+   - Stated geographic reach, distinguishing between current and planned markets
+
+4. Market Positioning
+   - How the company describes its position in the market
+   - Claimed differentiators from competitors
+   - Observed brand messaging and tone, with examples
+
+5. Technology and Innovation
+   - Claimed use of AI, machine learning, or other advanced technologies
+     * Note if technical details or independent verifications are provided
+   - Recent product developments or innovations as presented by the company
+   - Stated future roadmap or planned features, if any
+
+6. User Experience and Interface
+   - Description of the user interface based on provided information and images
+   - Stated customization and personalization options
+   - Claimed mobile and cross-platform capabilities
+
+7. Integration and Compatibility
+   - List of stated integrations with third-party tools
+   - Mentioned API availability and capabilities
+   - Claimed compatibility with different operating systems or browsers
+
+8. Security and Compliance
+   - Security measures and protocols claimed to be in place
+   - Stated data protection and privacy policies
+   - Mentioned compliance with industry standards
+     * Only list certifications explicitly stated as held by the company
+     * For standards mentioned without clear certification, use language like "aligns with" or "follows practices from"
+   - Described data hosting and storage information
+   - Note any ambiguities or unclear statements regarding security and compliance
+
+9. Pricing and Business Model
+   - Pricing structure if publicly available
+   - Described subscription models or licensing options
+   - Mentioned availability of free trials or demos
+
+10. Customer Support and Services
+    - Types of support claimed to be offered
+    - Described implementation and onboarding services
+    - Listed training and educational resources
+
+11. Partner Ecosystem
+    - Mentioned technology or implementation partners
+    - Described reseller or affiliate programs, if any
+
+12. Content and Thought Leadership
+    - Types of content observed on the website
+    - Apparent frequency of content updates
+    - Key themes or topics covered in the content
+
+13. Company Culture and Employment
+    - Stated employee value proposition
+    - Mentioned career opportunities and growth paths
+    - Listed company values and social responsibility initiatives
+
+14. Competitive Landscape
+    - Competitors identified by the company, if any
+    - Comparative strengths and weaknesses as presented by the company
+
+15. SWOT Analysis
+    - Strengths: Key advantages explicitly claimed by the company
+    - Weaknesses: Areas of improvement acknowledged by the company, if any
+    - Opportunities: Potential growth areas mentioned or inferred from content
+    - Threats: Challenges or competitors acknowledged by the company
+
+16. Recent News and Developments
+    - Major announcements or press releases featured on the site
+    - Mentioned awards or recognitions, noting their sources and dates
+    - Stated mergers, acquisitions, or partnerships
+
+17. Financial Information (if publicly available)
+    - Revenue figures or growth rates as officially reported
+    - Mentioned funding rounds or investments
+
+18. Customer Testimonials and Reviews
+    - Summary of customer feedback presented on the website
+    - Common praise points and criticisms as shown in testimonials
+    - Note if diverse perspectives are presented or if testimonials seem curated
+
+19. Marketing and Sales Approach
+    - Observed key marketing channels used on the website
+    - Described sales process and methodology, if discernible
+
+20. International Presence
+    - Listed available languages for products or services
+    - Mentioned global offices or support centers
+
+For each section, please provide as much detail as possible based on the available information. If certain information is not available or is unclear, explicitly note this in the analysis. The goal is to create a comprehensive profile that accurately represents the information provided by the company, allowing for informed comparisons with other organizations in the same space.
+

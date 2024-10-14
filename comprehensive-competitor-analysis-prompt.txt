@@ -1,0 +1,104 @@
+# Comprehensive Competitor Analysis Prompt
+
+Based on the extracted content from the company's website, please provide a detailed analysis of the organization covering the following aspects:
+
+1. Company Overview
+   - Brief history and background
+   - Mission and vision statements
+   - Key leadership and team structure
+
+2. Product/Service Offerings
+   - Main product or platform name
+   - Detailed list of features and capabilities
+   - Unique selling propositions
+   - Product architecture and technical specifications (if available)
+
+3. Target Market and Customer Base
+   - Primary industries served
+   - Size of businesses targeted (SMB, Enterprise, etc.)
+   - Notable clients or case studies
+   - Geographic reach
+
+4. Market Positioning
+   - How the company positions itself in the market
+   - Key differentiators from competitors
+   - Brand messaging and tone
+
+5. Technology and Innovation
+   - Use of AI, machine learning, or other advanced technologies
+   - Recent product developments or innovations
+   - Future roadmap or planned features (if mentioned)
+
+6. User Experience and Interface
+   - Description of the user interface
+   - Customization and personalization options
+   - Mobile and cross-platform capabilities
+
+7. Integration and Compatibility
+   - List of integrations with third-party tools
+   - API availability and capabilities
+   - Compatibility with different operating systems or browsers
+
+8. Security and Compliance
+   - Security measures and protocols in place
+   - Data protection and privacy policies
+   - Compliance with industry standards (e.g., GDPR, ISO certifications)
+   - Data hosting and storage information
+
+9. Pricing and Business Model
+   - Pricing structure (if available)
+   - Subscription models or licensing options
+   - Free trial or demo availability
+
+10. Customer Support and Services
+    - Types of support offered (e.g., 24/7, email, phone, chat)
+    - Implementation and onboarding services
+    - Training and educational resources
+
+11. Partner Ecosystem
+    - List of technology or implementation partners
+    - Reseller or affiliate programs
+
+12. Content and Thought Leadership
+    - Types of content produced (blog posts, whitepapers, case studies)
+    - Frequency of content updates
+    - Key themes or topics covered
+
+13. Company Culture and Employment
+    - Employee value proposition
+    - Career opportunities and growth
+    - Company values and social responsibility initiatives
+
+14. Competitive Landscape
+    - Identified competitors (direct and indirect)
+    - Comparative strengths and weaknesses
+
+15. SWOT Analysis
+    - Strengths
+    - Weaknesses
+    - Opportunities
+    - Threats
+
+16. Recent News and Developments
+    - Major announcements or press releases
+    - Awards or recognitions
+    - Mergers, acquisitions, or partnerships
+
+17. Financial Information (if publicly available)
+    - Revenue figures or growth rates
+    - Funding rounds or investments
+
+18. Customer Testimonials and Reviews
+    - Summary of customer feedback
+    - Common praise points and criticisms
+
+19. Marketing and Sales Approach
+    - Key marketing channels used
+    - Sales process and methodology (if discernible)
+
+20. International Presence
+    - Available languages
+    - Global offices or support centers
+
+Please provide as much detail as possible for each section based on the available information. If certain information is not available or unclear, please note this in the analysis. The goal is to create a comprehensive profile that can be used to compare and contrast against other organizations in the same space.
+
