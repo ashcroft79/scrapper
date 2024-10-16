@@ -114,7 +114,7 @@ def main():
         st.session_state.selected_content = defaultdict(list)
 
     url = st.text_input("Enter the website URL to scrape:")
-    max_depth = st.number_input("Enter the maximum depth to scrape:", min_value=0, max_value=2, value=1, step=1)
+    max_depth = st.number_input("Enter the maximum depth to scrape:", min_value=0, max_value=5, value=1, step=1)
     include_blog_posts = st.checkbox("Include blog posts", value=False)
     
     if st.button("Scrape"):
