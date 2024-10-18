@@ -44,10 +44,11 @@ class UniversalWebScraper:
 
     def create_site_map(self):
         to_visit = [(self.base_url, 0)]
-        while to_visit:
-            url, depth = to_visit.pop(0)
-            if depth > self.max_depth:
-                continue
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            while to_visit:
+                url, depth = to_visit.pop(0)
+                if depth > self.max_depth:
+                    continue
             normalized_url = self.normalize_url(url)
             if normalized_url not in self.visited and self.is_valid_url(normalized_url) and not self.should_exclude(normalized_url):
                 self.visited.add(normalized_url)
