@@ -86,51 +86,81 @@ def handle_cookie_consent(driver):
     except:
         pass
 
+def detect_pagination_type(driver):
+    pagination_selectors = {
+        'numbered': 'button.archive__pagination__number, .pagination__number, .page-numbers, [class*="pagination"] button',
+        'load_more': 'button[class*="load-more"], .load-more, .more, #load-more',
+        'infinite_scroll': '.infinite-scroll, .scroll-container'
+    }
+    
+    for ptype, selector in pagination_selectors.items():
+        if len(driver.find_elements(By.CSS_SELECTOR, selector)) > 0:
+            return ptype
+    return None
+
+def handle_numbered_pagination(driver):
+    last_page_content = ''
+    page = 1
+    while True:
+        try:
+            current_content = driver.page_source
+            if current_content == last_page_content:
+                break
+                
+            next_button = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, 
+                    f'button[class*="pagination"][data-page="{page + 1}"], '
+                    f'.pagination__number[data-page="{page + 1}"], '
+                    f'a.page-numbers[href*="page/{page + 1}"]'))
+            )
+            
+            driver.execute_script("arguments[0].scrollIntoView(true);", next_button)
+            driver.execute_script("arguments[0].click();", next_button)
+            time.sleep(2)
+            
+            last_page_content = current_content
+            page += 1
+            
+        except (TimeoutException, NoSuchElementException):
+            break
+
+def handle_load_more(driver):
+    while True:
+        try:
+            load_more = WebDriverWait(driver, 5).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 
+                    'button[class*="load-more"], .load-more, .more, #load-more'))
+            )
+            driver.execute_script("arguments[0].scrollIntoView(true);", load_more)
+            driver.execute_script("arguments[0].click();", load_more)
+            time.sleep(2)
+        except (TimeoutException, NoSuchElementException):
+            break
+
+def handle_infinite_scroll(driver):
+    last_height = driver.execute_script("return document.body.scrollHeight")
+    while True:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+        
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            break
+        last_height = new_height
+
 def load_more_content(driver):
     try:
-        last_url_count = 0
-        current_url_count = len(driver.find_elements(By.CSS_SELECTOR, 'a[href*="/hub/"]'))
+        pagination_type = detect_pagination_type(driver)
         
-        # Keep clicking pagination until no new links are found
-        page = 2  # Start from page 2 since we're already on page 1
-        while True:
-            try:
-                # Locate and click the next page button
-                page_button = WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, f'button.archive__pagination__number[data-page="{page}"]'))
-                )
-                driver.execute_script("arguments[0].scrollIntoView(true);", page_button)
-                driver.execute_script("arguments[0].click();", page_button)
-                time.sleep(2)  # Wait for content to load
-                
-                # Check if new content was loaded
-                current_url_count = len(driver.find_elements(By.CSS_SELECTOR, 'a[href*="/hub/"]'))
-                if current_url_count <= last_url_count:
-                    break
-                    
-                last_url_count = current_url_count
-                page += 1
-                
-            except (TimeoutException, NoSuchElementException):
-                break
-                
+        if pagination_type == 'numbered':
+            handle_numbered_pagination(driver)
+        elif pagination_type == 'load_more':
+            handle_load_more(driver)
+        elif pagination_type == 'infinite_scroll':
+            handle_infinite_scroll(driver)
+            
     except Exception as e:
         st.error(f"Error loading more content: {str(e)}")
-
-def detect_dynamic_content(driver, timeout=5):
-    try:
-        old_page = driver.page_source
-        time.sleep(1)
-        
-        for _ in range(timeout):
-            new_page = driver.page_source
-            if new_page != old_page:
-                old_page = new_page
-                time.sleep(1)
-            else:
-                break
-    except Exception as e:
-        st.error(f"Error detecting dynamic content: {str(e)}")
 
 def extract_content(driver, base_url, exclude_types):
     content = []
@@ -168,7 +198,7 @@ def scrape_single_page(url, base_url, exclude_types):
     try:
         driver.get(url)
         handle_cookie_consent(driver)
-        detect_dynamic_content(driver)
+        load_more_content(driver)
         return extract_content(driver, base_url, exclude_types)
     finally:
         driver.quit()
@@ -176,16 +206,14 @@ def scrape_single_page(url, base_url, exclude_types):
 def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, target_date, progress_bar):
     visited = set()
     all_content = []
-    links_to_scrape = [(initial_url, 0)]  # (url, depth)
+    links_to_scrape = [(initial_url, 0)]
     
-    # First get all links from the initial page
     options = create_chrome_options()
     driver = webdriver.Chrome(service=Service(), options=options)
     try:
         driver.get(initial_url)
         handle_cookie_consent(driver)
-        load_more_content(driver)  # Added load_more_content call here
-        detect_dynamic_content(driver)
+        load_more_content(driver)
         initial_links = gather_links(driver, base_url)
         for link in initial_links:
             if link not in visited and not is_unwanted_link(link, base_url):
@@ -193,7 +221,6 @@ def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, targ
     finally:
         driver.quit()
 
-    # Now scrape all pages in parallel
     with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_url = {}
         for url, depth in links_to_scrape:
