@@ -1,0 +1,540 @@
+
+[URL] https://www.valamis.com/hub
+[P] Valamis values your privacy. We use cookies to personalize content, provide social media features, and analyze our traffic and ads. Please choose the cookie types you want to allow.
+[LI] Necessary 35 Necessary cookies are crucial for the website's proper functioning and cannot be disabled without negatively impacting the site's performance and user experience. These cookies do not store personal information and are strictly necessary for basic functions. Without them, the website would not be operable. Cookiebot2Learn more about this provider1.gifUsed to count the number of sessions to the website, necessary for optimizing CMP product delivery. Maximum Storage Duration: SessionType: Pixel TrackerCookieConsentStores the user's cookie consent state for the current domainMaximum Storage Duration: 1 yearType: HTTP CookieGoogle4Learn more about this providerSome of the data collected by this provider is for the purposes of personalization and measuring advertising effectiveness.test_cookieUsed to check if the user's browser supports cookies.Maximum Storage Duration: 1 dayType: HTTP Cookie_GRECAPTCHAThis cookie is used to distinguish between humans and bots. This is beneficial for the website, in order to make valid reports on the use of their website.Maximum Storage Duration: 180 daysType: HTTP Cookierc::d-15#This cookie is used to distinguish between humans and bots. Maximum Storage Duration: PersistentType: HTML Local Storagear_debugChecks whether a technical debugger-cookie is present. Maximum Storage Duration: 3 monthsType: HTTP CookieHubspot6Learn more about this providerrc::aThis cookie is used to distinguish between humans and bots. This is beneficial for the website, in order to make valid reports on the use of their website.Maximum Storage Duration: PersistentType: HTML Local Storagerc::bThis cookie is used to distinguish between humans and bots. Maximum Storage Duration: SessionType: HTML Local Storagerc::cThis cookie is used to distinguish between humans and bots. Maximum Storage Duration: SessionType: HTML Local Storagerc::fThis cookie is used to distinguish between humans and bots. Maximum Storage Duration: PersistentType: HTML Local Storage__cfruidThis cookie is a part of the services provided by Cloudflare - Including load-balancing, deliverance of website content and serving DNS connection for website operators. Maximum Storage Duration: SessionType: HTTP Cookie__hsscIdentifies if the cookie data needs to be updated in the visitor's browser.Maximum Storage Duration: 1 dayType: HTTP CookieLinkedIn1Learn more about this providerli_gcStores the user's cookie consent state for the current domainMaximum Storage Duration: 180 daysType: HTTP Cookieapollo.iog2crowd.comhsforms.comvimeo.com6__cf_bm [x6]This cookie is used to distinguish between humans and bots. This is beneficial for the website, in order to make valid reports on the use of their website.Maximum Storage Duration: 1 dayType: HTTP Cookiehsforms.comvimeo.com3_cfuvid [x3]This cookie is a part of the services provided by Cloudflare - Including load-balancing, deliverance of website content and serving DNS connection for website operators. Maximum Storage Duration: SessionType: HTTP Cookiewww.valamis.com13object(#-#-##:#:#.#)Holds the users timezone.Maximum Storage Duration: PersistentType: HTML Local Storaget3DThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetADeThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetADuThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetAEThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetCThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetMQThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetnsAppThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetPLThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetTDeThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetTDuThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetTEThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetTfThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local Storage
+[LI] Cookiebot2Learn more about this provider1.gifUsed to count the number of sessions to the website, necessary for optimizing CMP product delivery. Maximum Storage Duration: SessionType: Pixel TrackerCookieConsentStores the user's cookie consent state for the current domainMaximum Storage Duration: 1 yearType: HTTP Cookie
+[EXTERNAL LINK] https://www.cookiebot.com/goto/privacy-policy/
+[LI] Google4Learn more about this providerSome of the data collected by this provider is for the purposes of personalization and measuring advertising effectiveness.test_cookieUsed to check if the user's browser supports cookies.Maximum Storage Duration: 1 dayType: HTTP Cookie_GRECAPTCHAThis cookie is used to distinguish between humans and bots. This is beneficial for the website, in order to make valid reports on the use of their website.Maximum Storage Duration: 180 daysType: HTTP Cookierc::d-15#This cookie is used to distinguish between humans and bots. Maximum Storage Duration: PersistentType: HTML Local Storagear_debugChecks whether a technical debugger-cookie is present. Maximum Storage Duration: 3 monthsType: HTTP Cookie
+[EXTERNAL LINK] https://business.safety.google/privacy/
+[P] Some of the data collected by this provider is for the purposes of personalization and measuring advertising effectiveness.
+[LI] Hubspot6Learn more about this providerrc::aThis cookie is used to distinguish between humans and bots. This is beneficial for the website, in order to make valid reports on the use of their website.Maximum Storage Duration: PersistentType: HTML Local Storagerc::bThis cookie is used to distinguish between humans and bots. Maximum Storage Duration: SessionType: HTML Local Storagerc::cThis cookie is used to distinguish between humans and bots. Maximum Storage Duration: SessionType: HTML Local Storagerc::fThis cookie is used to distinguish between humans and bots. Maximum Storage Duration: PersistentType: HTML Local Storage__cfruidThis cookie is a part of the services provided by Cloudflare - Including load-balancing, deliverance of website content and serving DNS connection for website operators. Maximum Storage Duration: SessionType: HTTP Cookie__hsscIdentifies if the cookie data needs to be updated in the visitor's browser.Maximum Storage Duration: 1 dayType: HTTP Cookie
+[EXTERNAL LINK] https://legal.hubspot.com/privacy-policy?__hstc=5981356.60373d3ae2c3eb242b064a01a89fd473.1729272980520.1729272980520.1729272980520.1&__hssc=5981356.1.1729272980520&__hsfp=1512302384
+[LI] LinkedIn1Learn more about this providerli_gcStores the user's cookie consent state for the current domainMaximum Storage Duration: 180 daysType: HTTP Cookie
+[EXTERNAL LINK] https://www.linkedin.com/legal/privacy-policy
+[LI] apollo.iog2crowd.comhsforms.comvimeo.com6__cf_bm [x6]This cookie is used to distinguish between humans and bots. This is beneficial for the website, in order to make valid reports on the use of their website.Maximum Storage Duration: 1 dayType: HTTP Cookie
+[LI] hsforms.comvimeo.com3_cfuvid [x3]This cookie is a part of the services provided by Cloudflare - Including load-balancing, deliverance of website content and serving DNS connection for website operators. Maximum Storage Duration: SessionType: HTTP Cookie
+[LI] www.valamis.com13object(#-#-##:#:#.#)Holds the users timezone.Maximum Storage Duration: PersistentType: HTML Local Storaget3DThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetADeThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetADuThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetAEThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetCThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetMQThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetnsAppThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetPLThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetTDeThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetTDuThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetTEThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local StoragetTfThis cookie is part of a bundle of cookies which serve the purpose of content delivery and presentation. The cookies keep the correct state of font, blog/picture sliders, color themes and other website settings.Maximum Storage Duration: PersistentType: HTML Local Storage
+[LI] Preferences 4 Preference cookies enable a website to remember information that changes the way the website behaves or looks, like your preferred language or the region that you are in.LinkedIn2Learn more about this providerbcookieUsed in order to detect spam and improve the website's security. Maximum Storage Duration: 1 yearType: HTTP CookielidcRegisters which server-cluster is serving the visitor. This is used in context with load balancing, in order to optimize user experience. Maximum Storage Duration: 1 dayType: HTTP CookieVimeo2Learn more about this providerplayerSaves the user's preferences when playing embedded videos from Vimeo.Maximum Storage Duration: 1 yearType: HTTP Cookiesync_activeContains data on visitor's video-content preferences - This allows the website to remember parameters such as preferred volume or video quality. The service is provided by Vimeo.com.Maximum Storage Duration: PersistentType: HTML Local Storage
+[LI] LinkedIn2Learn more about this providerbcookieUsed in order to detect spam and improve the website's security. Maximum Storage Duration: 1 yearType: HTTP CookielidcRegisters which server-cluster is serving the visitor. This is used in context with load balancing, in order to optimize user experience. Maximum Storage Duration: 1 dayType: HTTP Cookie
+[EXTERNAL LINK] https://www.linkedin.com/legal/privacy-policy
+[LI] Vimeo2Learn more about this providerplayerSaves the user's preferences when playing embedded videos from Vimeo.Maximum Storage Duration: 1 yearType: HTTP Cookiesync_activeContains data on visitor's video-content preferences - This allows the website to remember parameters such as preferred volume or video quality. The service is provided by Vimeo.com.Maximum Storage Duration: PersistentType: HTML Local Storage
+[EXTERNAL LINK] https://vimeo.com/privacy
+[LI] Statistics 12 Analytical cookies enable the website owner to gain insights into how visitors interact with the website by gathering and reporting data. These cookies do not store personal information. These data help optimize a website's performance and user experience. G2Crowd1Learn more about this providerg2trackingUsed to track user’s interaction with embedded content.Maximum Storage Duration: PersistentType: HTML Local StorageGoogle2Learn more about this providerSome of the data collected by this provider is for the purposes of personalization and measuring advertising effectiveness._gaUsed to send data to Google Analytics about the visitor's device and behavior. Tracks the visitor across devices and marketing channels.Maximum Storage Duration: 2 yearsType: HTTP Cookie_ga_#Used to send data to Google Analytics about the visitor's device and behavior. Tracks the visitor across devices and marketing channels.Maximum Storage Duration: 2 yearsType: HTTP CookieHotjar5Learn more about this providerhjActiveViewportIdsThis cookie contains an ID string on the current session. This contains non-personal information on what subpages the visitor enters – this information is used to optimize the visitor's experience.Maximum Storage Duration: PersistentType: HTML Local StoragehjViewportIdSaves the user's screen size in order to adjust the size of images on the website.Maximum Storage Duration: SessionType: HTML Local Storage_hjSession_#Collects statistics on the visitor's visits to the website, such as the number of visits, average time spent on the website and what pages have been read.Maximum Storage Duration: 1 dayType: HTTP Cookie_hjSessionUser_#Collects statistics on the visitor's visits to the website, such as the number of visits, average time spent on the website and what pages have been read.Maximum Storage Duration: 1 yearType: HTTP Cookie_hjTLDTestRegisters statistical data on users' behaviour on the website. Used for internal analytics by the website operator. Maximum Storage Duration: SessionType: HTTP CookieHubspot1Learn more about this provider__hssrcUsed to recognise the visitor's browser upon reentry on the website.Maximum Storage Duration: SessionType: HTTP CookieVWO2Learn more about this provider_vwo_uuid_v2This cookie is set to make split-tests on the website, which optimizes the website's relevance towards the visitor – the cookie can also be set to improve the visitor's experience on a website.Maximum Storage Duration: 1 yearType: HTTP Cookieeu01/v.gifThis cookie is used by the website’s operator in context with multi-variate testing. This is a tool used to combine or change content on the website. This allows the website to find the best variation/edition of the site. Maximum Storage Duration: SessionType: Pixel TrackerVimeo1Learn more about this providervuidCollects data on the user's visits to the website, such as which pages have been read.Maximum Storage Duration: 2 yearsType: HTTP Cookie
+[LI] G2Crowd1Learn more about this providerg2trackingUsed to track user’s interaction with embedded content.Maximum Storage Duration: PersistentType: HTML Local Storage
+[EXTERNAL LINK] https://www.g2crowd.com/static/privacy
+[LI] Google2Learn more about this providerSome of the data collected by this provider is for the purposes of personalization and measuring advertising effectiveness._gaUsed to send data to Google Analytics about the visitor's device and behavior. Tracks the visitor across devices and marketing channels.Maximum Storage Duration: 2 yearsType: HTTP Cookie_ga_#Used to send data to Google Analytics about the visitor's device and behavior. Tracks the visitor across devices and marketing channels.Maximum Storage Duration: 2 yearsType: HTTP Cookie
+[EXTERNAL LINK] https://business.safety.google/privacy/
+[P] Some of the data collected by this provider is for the purposes of personalization and measuring advertising effectiveness.
+[LI] Hotjar5Learn more about this providerhjActiveViewportIdsThis cookie contains an ID string on the current session. This contains non-personal information on what subpages the visitor enters – this information is used to optimize the visitor's experience.Maximum Storage Duration: PersistentType: HTML Local StoragehjViewportIdSaves the user's screen size in order to adjust the size of images on the website.Maximum Storage Duration: SessionType: HTML Local Storage_hjSession_#Collects statistics on the visitor's visits to the website, such as the number of visits, average time spent on the website and what pages have been read.Maximum Storage Duration: 1 dayType: HTTP Cookie_hjSessionUser_#Collects statistics on the visitor's visits to the website, such as the number of visits, average time spent on the website and what pages have been read.Maximum Storage Duration: 1 yearType: HTTP Cookie_hjTLDTestRegisters statistical data on users' behaviour on the website. Used for internal analytics by the website operator. Maximum Storage Duration: SessionType: HTTP Cookie
+[EXTERNAL LINK] https://www.hotjar.com/legal/policies/privacy/
+[LI] Hubspot1Learn more about this provider__hssrcUsed to recognise the visitor's browser upon reentry on the website.Maximum Storage Duration: SessionType: HTTP Cookie
+[EXTERNAL LINK] https://legal.hubspot.com/privacy-policy?__hstc=5981356.60373d3ae2c3eb242b064a01a89fd473.1729272980520.1729272980520.1729272980520.1&__hssc=5981356.1.1729272980520&__hsfp=1512302384
+[LI] VWO2Learn more about this provider_vwo_uuid_v2This cookie is set to make split-tests on the website, which optimizes the website's relevance towards the visitor – the cookie can also be set to improve the visitor's experience on a website.Maximum Storage Duration: 1 yearType: HTTP Cookieeu01/v.gifThis cookie is used by the website’s operator in context with multi-variate testing. This is a tool used to combine or change content on the website. This allows the website to find the best variation/edition of the site. Maximum Storage Duration: SessionType: Pixel Tracker
+[EXTERNAL LINK] https://vwo.com/privacy-policy/
+[LI] Vimeo1Learn more about this providervuidCollects data on the user's visits to the website, such as which pages have been read.Maximum Storage Duration: 2 yearsType: HTTP Cookie
+[EXTERNAL LINK] https://vimeo.com/privacy
+[LI] Marketing 34 Marketing cookies track website visitors to display relevant ads to individual users. These cookies do not store personal information. They measure the effectiveness of advertising campaigns and remarketing, relying on a unique identifier for the user's browser and devices. Meta Platforms, Inc.3Learn more about this providerlastExternalReferrerDetects how the user reached the website by registering their last URL-address.Maximum Storage Duration: PersistentType: HTML Local StoragelastExternalReferrerTimeDetects how the user reached the website by registering their last URL-address.Maximum Storage Duration: PersistentType: HTML Local Storage_fbpUsed by Facebook to deliver a series of advertisement products such as real time bidding from third party advertisers.Maximum Storage Duration: 3 monthsType: HTTP CookieGoogle5Learn more about this providerSome of the data collected by this provider is for the purposes of personalization and measuring advertising effectiveness.IDEPendingMaximum Storage Duration: 400 daysType: HTTP Cookiepagead/landingCollects data on visitor behaviour from multiple websites, in order to present more relevant advertisement - This also allows the website to limit the number of times that they are shown the same advertisement. Maximum Storage Duration: SessionType: Pixel TrackerNIDPendingMaximum Storage Duration: 6 monthsType: HTTP Cookiepagead/1p-user-list/#Tracks if the user has shown interest in specific products or events across multiple websites and detects how the user navigates between sites. This is used for measurement of advertisement efforts and facilitates payment of referral-fees between websites.Maximum Storage Duration: SessionType: Pixel Tracker_gcl_auUsed by Google AdSense for experimenting with advertisement efficiency across websites using their services. Maximum Storage Duration: 3 monthsType: HTTP CookieHubspot4Learn more about this provider__ptq.gifSends data to the marketing platform Hubspot about the visitor's device and behaviour. Tracks the visitor across devices and marketing channels.Maximum Storage Duration: SessionType: Pixel Tracker__hmplCollects information on user preferences and/or interaction with web-campaign content - This is used on CRM-campaign-platform used by website owners for promoting events or products.Maximum Storage Duration: SessionType: HTML Local Storage__hstcSets a unique ID for the session. This allows the website to obtain data on visitor behaviour for statistical purposes.Maximum Storage Duration: 180 daysType: HTTP CookiehubspotutkSets a unique ID for the session. This allows the website to obtain data on visitor behaviour for statistical purposes.Maximum Storage Duration: 180 daysType: HTTP CookieLinkedIn1Learn more about this providercollect/Collects data on user behaviour and interaction in order to optimize the website and make advertisement on the website more relevant. Maximum Storage Duration: SessionType: Pixel TrackerYouTube21Learn more about this provider#-#Used to track user’s interaction with embedded content.Maximum Storage Duration: SessionType: HTML Local StorageiU5q-!O9@$Registers a unique ID to keep statistics of what videos from YouTube the user has seen.Maximum Storage Duration: SessionType: HTML Local StorageLAST_RESULT_ENTRY_KEYUsed to track user’s interaction with embedded content.Maximum Storage Duration: SessionType: HTTP CookieLogsDatabaseV2:V#||LogsRequestsStoreUsed to track user’s interaction with embedded content.Maximum Storage Duration: PersistentType: IndexedDBnextIdUsed to track user’s interaction with embedded content.Maximum Storage Duration: SessionType: HTTP Cookieremote_sidNecessary for the implementation and functionality of YouTube video-content on the website. Maximum Storage Duration: SessionType: HTTP CookierequestsUsed to track user’s interaction with embedded content.Maximum Storage Duration: SessionType: HTTP CookieServiceWorkerLogsDatabase#SWHealthLogNecessary for the implementation and functionality of YouTube video-content on the website. Maximum Storage Duration: PersistentType: IndexedDBTESTCOOKIESENABLEDUsed to track user’s interaction with embedded content.Maximum Storage Duration: 1 dayType: HTTP CookieVISITOR_INFO1_LIVETries to estimate the users' bandwidth on pages with integrated YouTube videos.Maximum Storage Duration: 180 daysType: HTTP CookieYSCRegisters a unique ID to keep statistics of what videos from YouTube the user has seen.Maximum Storage Duration: SessionType: HTTP Cookieyt.innertube::nextIdRegisters a unique ID to keep statistics of what videos from YouTube the user has seen.Maximum Storage Duration: PersistentType: HTML Local Storageytidb::LAST_RESULT_ENTRY_KEYUsed to track user’s interaction with embedded content.Maximum Storage Duration: PersistentType: HTML Local StorageYtIdbMeta#databasesUsed to track user’s interaction with embedded content.Maximum Storage Duration: PersistentType: IndexedDByt-remote-cast-availableStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: SessionType: HTML Local Storageyt-remote-cast-installedStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: SessionType: HTML Local Storageyt-remote-connected-devicesStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: PersistentType: HTML Local Storageyt-remote-device-idStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: PersistentType: HTML Local Storageyt-remote-fast-check-periodStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: SessionType: HTML Local Storageyt-remote-session-appStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: SessionType: HTML Local Storageyt-remote-session-nameStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: SessionType: HTML Local Storage
+[LI] Meta Platforms, Inc.3Learn more about this providerlastExternalReferrerDetects how the user reached the website by registering their last URL-address.Maximum Storage Duration: PersistentType: HTML Local StoragelastExternalReferrerTimeDetects how the user reached the website by registering their last URL-address.Maximum Storage Duration: PersistentType: HTML Local Storage_fbpUsed by Facebook to deliver a series of advertisement products such as real time bidding from third party advertisers.Maximum Storage Duration: 3 monthsType: HTTP Cookie
+[EXTERNAL LINK] https://www.facebook.com/policy.php/
+[LI] Google5Learn more about this providerSome of the data collected by this provider is for the purposes of personalization and measuring advertising effectiveness.IDEPendingMaximum Storage Duration: 400 daysType: HTTP Cookiepagead/landingCollects data on visitor behaviour from multiple websites, in order to present more relevant advertisement - This also allows the website to limit the number of times that they are shown the same advertisement. Maximum Storage Duration: SessionType: Pixel TrackerNIDPendingMaximum Storage Duration: 6 monthsType: HTTP Cookiepagead/1p-user-list/#Tracks if the user has shown interest in specific products or events across multiple websites and detects how the user navigates between sites. This is used for measurement of advertisement efforts and facilitates payment of referral-fees between websites.Maximum Storage Duration: SessionType: Pixel Tracker_gcl_auUsed by Google AdSense for experimenting with advertisement efficiency across websites using their services. Maximum Storage Duration: 3 monthsType: HTTP Cookie
+[EXTERNAL LINK] https://business.safety.google/privacy/
+[P] Some of the data collected by this provider is for the purposes of personalization and measuring advertising effectiveness.
+[LI] Hubspot4Learn more about this provider__ptq.gifSends data to the marketing platform Hubspot about the visitor's device and behaviour. Tracks the visitor across devices and marketing channels.Maximum Storage Duration: SessionType: Pixel Tracker__hmplCollects information on user preferences and/or interaction with web-campaign content - This is used on CRM-campaign-platform used by website owners for promoting events or products.Maximum Storage Duration: SessionType: HTML Local Storage__hstcSets a unique ID for the session. This allows the website to obtain data on visitor behaviour for statistical purposes.Maximum Storage Duration: 180 daysType: HTTP CookiehubspotutkSets a unique ID for the session. This allows the website to obtain data on visitor behaviour for statistical purposes.Maximum Storage Duration: 180 daysType: HTTP Cookie
+[EXTERNAL LINK] https://legal.hubspot.com/privacy-policy?__hstc=5981356.60373d3ae2c3eb242b064a01a89fd473.1729272980520.1729272980520.1729272980520.1&__hssc=5981356.1.1729272980520&__hsfp=1512302384
+[LI] LinkedIn1Learn more about this providercollect/Collects data on user behaviour and interaction in order to optimize the website and make advertisement on the website more relevant. Maximum Storage Duration: SessionType: Pixel Tracker
+[EXTERNAL LINK] https://www.linkedin.com/legal/privacy-policy
+[LI] YouTube21Learn more about this provider#-#Used to track user’s interaction with embedded content.Maximum Storage Duration: SessionType: HTML Local StorageiU5q-!O9@$Registers a unique ID to keep statistics of what videos from YouTube the user has seen.Maximum Storage Duration: SessionType: HTML Local StorageLAST_RESULT_ENTRY_KEYUsed to track user’s interaction with embedded content.Maximum Storage Duration: SessionType: HTTP CookieLogsDatabaseV2:V#||LogsRequestsStoreUsed to track user’s interaction with embedded content.Maximum Storage Duration: PersistentType: IndexedDBnextIdUsed to track user’s interaction with embedded content.Maximum Storage Duration: SessionType: HTTP Cookieremote_sidNecessary for the implementation and functionality of YouTube video-content on the website. Maximum Storage Duration: SessionType: HTTP CookierequestsUsed to track user’s interaction with embedded content.Maximum Storage Duration: SessionType: HTTP CookieServiceWorkerLogsDatabase#SWHealthLogNecessary for the implementation and functionality of YouTube video-content on the website. Maximum Storage Duration: PersistentType: IndexedDBTESTCOOKIESENABLEDUsed to track user’s interaction with embedded content.Maximum Storage Duration: 1 dayType: HTTP CookieVISITOR_INFO1_LIVETries to estimate the users' bandwidth on pages with integrated YouTube videos.Maximum Storage Duration: 180 daysType: HTTP CookieYSCRegisters a unique ID to keep statistics of what videos from YouTube the user has seen.Maximum Storage Duration: SessionType: HTTP Cookieyt.innertube::nextIdRegisters a unique ID to keep statistics of what videos from YouTube the user has seen.Maximum Storage Duration: PersistentType: HTML Local Storageytidb::LAST_RESULT_ENTRY_KEYUsed to track user’s interaction with embedded content.Maximum Storage Duration: PersistentType: HTML Local StorageYtIdbMeta#databasesUsed to track user’s interaction with embedded content.Maximum Storage Duration: PersistentType: IndexedDByt-remote-cast-availableStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: SessionType: HTML Local Storageyt-remote-cast-installedStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: SessionType: HTML Local Storageyt-remote-connected-devicesStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: PersistentType: HTML Local Storageyt-remote-device-idStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: PersistentType: HTML Local Storageyt-remote-fast-check-periodStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: SessionType: HTML Local Storageyt-remote-session-appStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: SessionType: HTML Local Storageyt-remote-session-nameStores the user's video player preferences using embedded YouTube videoMaximum Storage Duration: SessionType: HTML Local Storage
+[EXTERNAL LINK] https://business.safety.google/privacy/
+[LI] Unclassified 2Unclassified cookies are cookies that we are in the process of classifying together with the providers of individual cookies.assets.apollo.io2apolloAnonIdPendingMaximum Storage Duration: PersistentType: HTML Local StorageeventQueuePendingMaximum Storage Duration: PersistentType: HTML Local Storage
+[LI] assets.apollo.io2apolloAnonIdPendingMaximum Storage Duration: PersistentType: HTML Local StorageeventQueuePendingMaximum Storage Duration: PersistentType: HTML Local Storage
+[EXTERNAL LINK] https://www.cookiebot.com
+[EXTERNAL LINK] https://www.valamis.com/cookies
+[EXTERNAL LINK] https://www.valamis.com/privacy-policy
+[P] The trusted resource for learning theories and topics.
+[LI] Continuous development
+[LI] Employee performance management
+[LI] Leadership development
+[LI] Learning and Development
+[LI] Learning technologies
+[H3] Key areas of employee development
+[EXTERNAL LINK] https://www.valamis.com/hub/employee-development-areas
+[P] Here we cover the 12 key areas of employee development and how to build a comprehensive learning program.
+[H3] Learning and development fundamentals
+[EXTERNAL LINK] https://www.valamis.com/hub/learning-and-development
+[P] Learn what learning and development is and why it is so important. Discover main areas, terms, challenges, jobs, and the key difference between HR and L&D.
+[H3] The meaning of Learning Management System (LMS)
+[EXTERNAL LINK] https://www.valamis.com/hub/what-is-an-lms
+[P] Find out what a Learning Management System is. What does it do? What are the benefits of having LMS, and how to select the best LMS for your organization?
+[EXTERNAL LINK] https://www.valamis.com/hub/blooms-taxonomy
+[P] Discover Bloom’s Taxonomy and the differences between the original vs. revised levels.
+[H3] Enterprise Learning Platform
+[EXTERNAL LINK] https://www.valamis.com/hub/enterprise-learning-platform
+[P] Discover what an enterprise learning platform is and why you need a new learning solution. Discover the main features every enterprise LMS should have.
+[H3] Learning Record Store (LRS)
+[EXTERNAL LINK] https://www.valamis.com/hub/learning-record-store
+[P] Learn what Learning Record (LRS) is and what it enables. Discover 4 key steps on how to implement it and how to choose the right vendor.
+[H3] Skills-based talent management
+[EXTERNAL LINK] https://www.valamis.com/hub/skills-based-talent-management
+[P] Discover what a skills-based approach in talent hiring and management is. Learn the key 5 steps on how to implement it in your organization.
+[H3] Career development plan
+[EXTERNAL LINK] https://www.valamis.com/hub/career-development-plan
+[P] Learn what a career development plan is and how to create it. Discover examples and download the career development planning template in PDF.
+[H3] Employee onboarding process
+[EXTERNAL LINK] https://www.valamis.com/hub/employee-onboarding
+[P] Learn what employee onboarding is and how to organize the process. Discover best practices for each step from pre-onboarding till the end of the orientation.
+[EXTERNAL LINK] https://www.valamis.com/hub/mentoring
+[P] Discover the essence of mentoring and how it differs from coaching. Explore the types of mentoring, its definition, and the numerous benefits it can bring to individuals and the workplace.
+[H2] Helping businesses embrace their future through L&D.
+[P] Core Leader in 2024 Fosway 9-Grid™ for Learning Systems
+[P] ISO 27001 • ISO 27017 • ISAE 3000 type II
+[EXTERNAL LINK] https://www.valamis.com/hub
+[EXTERNAL LINK] https://www.valamis.com/de/knowledge-hub
+[EXTERNAL LINK] https://www.valamis.com/fi/
+[EXTERNAL LINK] https://www.valamis.com/nl/
+[LI] Follow Valamis on LinkedIn
+[EXTERNAL LINK] https://www.linkedin.com/company/valamis/
+[LI] Follow Valamis on Instagram
+[EXTERNAL LINK] https://www.instagram.com/valamis/
+[LI] Follow Valamis on YouTube
+[EXTERNAL LINK] https://www.youtube.com/channel/UCs3v9ObvcknbJq0xALSqj-Q
+[EXTERNAL LINK] https://twitter.com/valamis
+[LI] Follow Valamis on Facebook
+[EXTERNAL LINK] https://www.facebook.com/valamisglobal
+
+[URL] https://www.valamis.com/hub/career-development-plan
+[EXTERNAL LINK] https://www.valamis.com/
+[EXTERNAL LINK] https://www.valamis.com/hub
+[H1] Career development plan
+[P] Learn what a career development plan is and how to create it. Discover examples and download the career development planning template in PDF.
+[P] Content Marketing Specialist, Valamis
+[EXTERNAL LINK] https://www.linkedin.com/in/julia-kuzmina/
+[P] February 1, 2023·updated July 22, 2024
+[P] The idea of an employee remaining in the same role for the entirety of their career seems less relevant with each passing year.
+[P] Employees are now looking for more from their professional lives, and employers see benefits in helping them. Organizations can prevent burnout by introducing career development plans and keeping staff motivated with new and exciting challenges. As a company grows, so should its employees.
+[LI] What is a career development plan?
+[INTERNAL LINK] https://www.valamis.com/hub/career-development-plan#what-is-cdp
+[LI] The purpose of a career development plannning
+[INTERNAL LINK] https://www.valamis.com/hub/career-development-plan#purpose-cdp
+[LI] Why career development is important
+[INTERNAL LINK] https://www.valamis.com/hub/career-development-plan#why-cdp
+[LI] How organizations can support employee career development
+[INTERNAL LINK] https://www.valamis.com/hub/career-development-plan#how-to-support-cdp
+[LI] How to create a personalized career development plan for an employee
+[INTERNAL LINK] https://www.valamis.com/hub/career-development-plan#create-cdp
+[LI] When to start thinking about career development plan
+[INTERNAL LINK] https://www.valamis.com/hub/career-development-plan#when-to-start-cdp
+[LI] Career development plan example (template)
+[INTERNAL LINK] https://www.valamis.com/hub/career-development-plan#example-cdp
+[H2] What is a career development plan?
+[P] A career development plan is a personalized roadmap designed to help employees achieve professional goals. It typically consists of short- and long-term goals related to each employee’s specific strengths and weaknesses, their current role, future ambitions, and the organization’s requirements.
+[P] While a career development plan can take several formats, they often incorporate a series of formal and informal steps an employee should undertake to improve their professional skills, increase their workplace value, and progress in their career. This could be by expanding their current role and taking on more responsibility or transitioning to a new position.
+[P] The personalized nature of career development plans is crucial to their success.
+[P] Every employee is unique, with different skills, strengths, and potential within a business and other wants and needs from their professional life.
+[P] Organizations must work with employees to design a career development plan that benefits both parties.
+[P] The following is a generalized approach to creating and maintaining a career development plan:
+[LI] Starting point – where the employee is in their career and an assessment of their current skillset, values, and aspirations.
+[LI] Ideal career – what they want to achieve in their career, defining specific goals and objectives.
+[LI] The difference – skill gaps they need to overcome to transition from their current role to their ideal role.
+[INTERNAL LINK] https://www.valamis.com/hub/skills-gap
+[LI] The path – a plan to bridge the gap; this defines a written career plan with specific steps the employee needs to accomplish.
+[LI] Review – as progression occurs, employees and organizations must review and reshape career development plans based on new factors.
+[H2] The purpose of a career development plan
+[P] A career development plan creates a written record of what an employee wants to achieve.
+[P] This record can have a different purpose for employees and employers.
+[H4] The purpose for employees
+[LI] help them define career goals and organize/plan the steps they need to take to progress. It also helps employees understand the potential for internal mobility and how their goals align with the organization.
+[INTERNAL LINK] https://www.valamis.com/hub/career-mobility
+[H4] The purpose for your company
+[LI] career development plans play a critical role in workforce planning and talent management, acting as a tool for HR departments to design future training programs. With a clear understanding of each employee’s career goals, organizations can work with them to achieve their potential and increase the value they generate for the company.
+[INTERNAL LINK] https://www.valamis.com/hub/workforce-planning
+[INTERNAL LINK] https://www.valamis.com/hub/talent-management
+[H2] Career development plan template
+[P] This template helps employees and leaders plan together for career growth: set goals, assess skills, and make a plan.
+[INTERNAL LINK] https://www.valamis.com/publications/career-development-plan-template
+[H2] Why career development is important
+[H4] The importance for employees
+[LI] Career development planning helps employees map out their future, organizing and identifying the steps they should take to achieve their professional goals. This includes connecting longer-term objectives with day-to-day activities, growing professionally, and setting achievable milestones.
+[LI] These all help enhance motivation and improve job performance, aiding the likelihood of achieving the long-term aims of the career development plan. Sometimes just having a future goal in mind improves present behaviors to the extent that the goal itself is more attainable. For example, with a clear career development plan in place, employees can focus on their professional development and target the specific skills they need to improve.
+[LI] Career development plans show employees what to do to achieve their dream job.
+[LI] They also improve transparency between employees and employers. Therefore, when mutually beneficial, organizations can invest in resources (e.g., educational material, external learning opportunities, etc.) to help employees improve themselves and progress in their careers.
+[P] The importance of learning opportunities and career planning and development has only increased in recent years.
+[P] Glint’s 2021 Employee Well-Being Report ranked “opportunities to learn and grow” as the number one driver of excellent workplace culture, up eight spots from the previous year.
+[EXTERNAL LINK] https://www.glintinc.com/wp-content/uploads/2021/05/Glint-May-2021-Employee-Well-Being-Report.pdf
+[P] In the past, in-person interactions were the primary driver of workplace culture. Team meals, drinks after work, and impromptu chats in the hallway are all examples of interaction significantly reduced with new remote and hybrid work models
+[P] The pandemic removed the importance of in-person interactions combined with new technologies and accelerated digital transformation. It created a less certain future, with employees more concerned about job security.
+[P] With more significant uncertainty, it is unsurprising that drivers of culture related to employee growth have risen in importance.
+[P] Employees now want more than a paycheck and a pat from their employer. They want to perform their work while also getting the opportunity to work on themselves, developing into better employees to help reduce job insecurity worries.
+[P] Career development plans and associated training programs help staff see their role as more than just a job. It is a path to a more secure or financially rewarding position.
+[H4] The importance for companies
+[P] Investing in employee development is critical to maintaining a vibrant and effective team. Achievers’ 2020 Engagement & Retention Report found:
+[EXTERNAL LINK] https://www.achievers.com/wp-content/uploads/2020/10/012220_Achievers_ERR_124-1.pdf
+[LI] 46% of employees feel only moderately valued by their bosses
+[LI] 30% feel “not very” or “not at all” valued
+[LI] 26% feel that being undervalued is the most significant barrier to becoming engaged in their work.
+[P] One way to dispel these feelings is to invest in employee development, demonstrating that the company values workers. With active L&D programs, organizations can boost employee retention and hold on to their most valuable team members.
+[P] LinkedIn found that 94% of employees would continue to work at a company for longer if they invested in their learning and development. For ten years, the Work Institute has ranked career development concerns as the number one reason employees leave organizations.
+[EXTERNAL LINK] https://learning.linkedin.com/content/dam/me/business/en-us/amp/learning-solutions/images/workplace-learning-report-2019/pdf/workplace-learning-report-2019.pdf
+[EXTERNAL LINK] https://workinstitute.com/
+[P] Employers need to treat and guide their L&D programs with career development plans because it helps attract and retain top talent.
+[P] This is before they even consider the potential performance benefits of career development programs and how they can inform upskilling and reskilling initiatives.
+[INTERNAL LINK] https://www.valamis.com/hub/upskilling
+[INTERNAL LINK] https://www.valamis.com/hub/reskilling
+[P] Perhaps just as bad as talented employees leaving is unskilled, unmotivated employees remaining at your company.
+[P] Gallup’s 2022 report on the “State of the Global Workplace” estimates that actively disengaged employees cost the global economy $7.8 trillion, 11% of the world’s GDP.
+[EXTERNAL LINK] https://www.gallup.com/workplace/393497/world-trillion-workplace-problem.aspx
+[P] In contrast, the benefits of high employee engagement are startling. By analyzing over one hundred thousand business units and comparing the top quartile to the bottom quartile, Gallup found:
+[LI] 23% higher profitability
+[LI] 14-18% higher productivity
+[LI] 10% higher customer loyalty
+[P] Thankfully employee development is a crucial driver of engagement, with previous studies showing that 80% of employees are more engaged when learning new skills.
+[EXTERNAL LINK] https://info.udemy.com/rs/273-CKQ-053/images/2016_Udemy_Workplace_Boredom_Study.pdf
+[P] Employee upskilling programs make people better at their job, boosting engagement and arming staff with the skills needed to enhance company performance.
+[P] Career development plans ensure that upskilling targets people with the right skills. With individualized training based on an employee’s long-term goals, companies can build a talented, engaged, and happy workforce capable of delivering success.
+[H2] Career development plan template
+[P] This template helps employees and leaders plan together for career growth: set goals, assess skills, and make a plan.
+[INTERNAL LINK] https://www.valamis.com/publications/career-development-plan-template
+[H2] How organizations can support employee career development
+[P] Career development plans benefit both the employer and the employee when implemented correctly. Therefore, you should work with your staff to help them accomplish their goals and become well-rounded, successful employees.
+[P] While employees must take responsibility and drive their own career development, organizations can also create an environment conducive to learning new skills.
+[LI] Developing an additive learning ecosystem that can enhance employees’ experience regardless of how they like to learn.
+[LI] Providing details about the employee’s strengths and weaknesses, where they need to focus their efforts, and the outcomes they should aim for.
+[LI] Considering the full range and potential of career development for a specific employee. This can mean not tunneling on hard skills that produce dramatic transformations in their capabilities but also taking into account soft, interpersonal skills such as communication and organizational abilities.
+[LI] Acknowledging progress by linking career development objectives and incorporating new skills to tangible workplace benefits. This could be a higher salary based on their unique contributions or transitioning to a new, more-rewarding role aligned with their career aims.
+[H2] How to create a personalized career development plan for an employee
+[H3] Identify employees ready for a career development plan
+[P] Producing a personalized plan for every employee is a significant undertaking, and for many employees, it may yield little value to the organization. It is always beneficial to focus time and resources where they will be most effective; this could be people who:
+[LI] Show leadership potential
+[LI] Have talent but seem disillusioned in their current role
+[LI] Demonstrate the enthusiasm and drive to learn new skills
+[LI] Want to take on new challenges
+[LI] Are the highest performers in the organization
+[P] Discuss with managers and supervisors from each department to identify candidates who would benefit the most from a dedicated career development plan. Reach out to the candidates and gauge their willingness to work closely with the organization and build a new career development plan.
+[H3] Ask them to prepare information about themselves
+[P] While it is a team effort between the organization and the employee, ultimately, the individual will drive the success of their career development plan. Therefore, you should ask them to start preparing information about their current role and what they want to achieve in their career.
+[P] Essential questions for employees to ask themselves before working on a career development plan include:
+[LI] What are your career goals?
+[LI] Where do you see yourself in five or ten years?
+[LI] What skills or experiences do you need to achieve your goal?
+[LI] What is currently holding you back in your professional life?
+[LI] What could your employer do to help your career?
+[P] Download a Career Development Plan Template [PDF/ DOCX]
+[INTERNAL LINK] https://www.valamis.com/publications/career-development-plan-template
+[P] To simplify the process, employers should provide a self-assessment form containing all the information they need to start designing their career development plan. This includes questions identifying the specific skills they currently have and what they will need moving forward.
+[P] The next step is to arrange a meeting between key stakeholders, the employee themselves, their line manager or direct superior, and often a member of the HR department.
+[P] During the meeting, the parties should go over the information compiled in step 2 and begin to define critical components of the career development plan.
+[P] This includes a clear vision of the employee’s professional interests and long-term career goals.
+[P] While it is generally easier to define start and end points, the aim of the meeting should be to begin to understand the various steps along the way. This means breaking down long-term objectives into a series of shorter-term goals and how they can be achieved.
+[P] Gather information on how the employee likes to learn and consider what their future L&D program may look like with input from HR personnel.
+[H3] Assess what is achievable
+[P] After meeting with the employee, the organization (in particular, the manager involved) needs to determine what they can achieve while working for them.
+[P] That means assessing their current skills, the employee potential, and critically what the organization needs from its workforce. For example, only some employees can have a career progressing to the c-suite.
+[P] Consult with relevant stakeholders and evaluate career development objectives that are achievable at the organization.
+[P] Identify the resources required to help the employee progress towards their career goals and determine whether they are currently present within the organization. In many instances, you will also need to look externally (i.e., external education and learning experiences).
+[H3] Work together to design the career development plan
+[P] Discuss with the employee and learn how the organization could best support their career development, including the potential resources available. Then start working together to produce a realistic career development plan that helps them achieve their goals.
+[P] While there are many potential forms a career development plan can take, critical factors you should include are:
+[LI] The employee’s starting point (a summary statement followed by their current education, training, and job assignment)
+[LI] Long-term career goals (over five years)
+[LI] Short-term career goals (less than five years)
+[LI] The development activities to put them in a position to achieve these goals
+[INTERNAL LINK] https://www.valamis.com/wp-content/uploads/2023/02/individual-career-development-plan-template.pdf
+[P] Download a Career Development Plan Template [PDF/ DOCX]
+[INTERNAL LINK] https://www.valamis.com/publications/career-development-plan-template
+[P] Important tips to remember when designing a career development plan include:
+[LI] Personalize – Ensure the final plan is tailored to each employee, considering their unique skillset and what they want to achieve.
+[LI] Be Flexible – Remember that an employee’s aspirations will likely change during their career, especially early on. While you can design a great initial career development plan, don’t make the mistake of sticking too closely to it. If the employee finds a new passion or stumbles into an area they excel, don’t be afraid to revise the plan to consider new factors.
+[LI] Tracking progress – Every plan needs to consider how the employee’s progress will be monitored. This could include incentives, such as a promotion, upon achieving a certain level of performance or demonstrating the value of the L&D investment made in them.
+[P] Finally comes the exciting part of implementing the career development plan. Ensure all stakeholders are happy with the program’s current form, then let the development begin.
+[P] While you can take steps to support each employee along their career development journey, success has to be driven by the individual.
+[P] Make sure to check back with each employee, scheduling regular sessions to determine their progress and review any potential updates to the plan.
+[P] Using learning metrics or KPIs, you must also assess employee improvements and training effectiveness. With metrics in place to track behavior, you can determine the return on investment for your L&D efforts.
+[INTERNAL LINK] https://www.valamis.com/blog/learning-metrics
+[P] Read more about metrics in our recent blogs: 10 Valuable Training Metrics to Know How to Measure and Evaluate Training Effectiveness
+[INTERNAL LINK] https://www.valamis.com/blog/learning-metrics
+[INTERNAL LINK] https://www.valamis.com/blog/how-to-measure-training-effectiveness
+[H2] When to start thinking about a career development plan?
+[P] While employees should continuously evaluate their skills, workplace experience, and career progression, there are better times for employers to engage with them to produce a more formal career development program.
+[P] Often a good time to start thinking about a career development plan is once an employee begins to impress management. When they have demonstrated their capabilities and become a valuable team member, management and HR should consider working on a personalized career development plan that maximizes an employee’s potential within the organization.
+[P] Another good time to start working on a career development plan is after a significant milestone at the company. Perhaps they land a major client or design a new workflow to improve operations. Whatever the specific reason, by setting future development goals, you can keep essential staff motivated and engaged and prevent them from drifting or looking for a new challenge at another company.
+[H2] Career Development Plan Example (TEMPLATE)
+[H3] What’s the purpose of the Career Development Plan template?
+[P] Our Career Development Plan (CPD) template is designed to help both employees and supervisors plan and structure career development effectively.
+[P] It encourages collaboration, offering a systematic approach to achieving career milestones that benefit everyone involved.
+[P] Empowerment for Managers: Supervisors receive guidance and resources to support their team’s growth journey.
+[P] Guidance for Employees: Take control of your career with an easy-to-follow, step-by-step process.
+[P] A clear framework for setting and achieving career goals. Sections to assess current skills, experience, and qualifications. Space to create an actionable plan for achieving career objectives.
+[P] Download our template, which will be a good tool for working on a plan. It helps key stakeholders keep all the data in one place.
+[EXTERNAL LINK] https://www.valamis.com/publications/career-development-plan-template
+[P] You can use the template in different formats.
+[P] Did you like it? Help us spread the word!
+[EXTERNAL LINK] https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.valamis.com%2Fhub%2Fcareer-development-plan&title=Career development plan  
+[EXTERNAL LINK] https://www.facebook.com/sharer/sharer.php?u=https://www.valamis.com/hub/career-development-plan&t=Career%20development%20plan%C2%A0%C2%A0
+[EXTERNAL LINK] https://twitter.com/share?text=Career development plan  &url=https%3A%2F%2Fwww.valamis.com%2Fhub%2Fcareer-development-plan
+[LI] Continuous development
+[EXTERNAL LINK] https://www.valamis.com/tag/continuous-development
+[LI] Employee performance management
+[EXTERNAL LINK] https://www.valamis.com/tag/employee-performance-management
+[LI] Learning and Development
+[EXTERNAL LINK] https://www.valamis.com/tag/learning-and-development
+[EXTERNAL LINK] https://www.valamis.com/tag/talent-management
+[LI] What is a career development plan?
+[LI] The purpose of a career development plan
+[LI] Why career development is important
+[LI] How organizations can support employee career development
+[LI] How to create a personalized career development plan for an employee
+[LI] When to start thinking about a career development plan?
+[LI] Career Development Plan Example (TEMPLATE)
+[H2] You might be interested in
+[H3] Key areas of employee development
+[EXTERNAL LINK] https://www.valamis.com/hub/employee-development-areas
+[H3] Learning and development fundamentals
+[EXTERNAL LINK] https://www.valamis.com/hub/learning-and-development
+[H3] The meaning of Learning Management System (LMS)
+[EXTERNAL LINK] https://www.valamis.com/hub/what-is-an-lms
+[H2] Helping businesses embrace their future through L&D.
+[P] Core Leader in 2024 Fosway 9-Grid™ for Learning Systems
+[P] ISO 27001 • ISO 27017 • ISAE 3000 type II
+[EXTERNAL LINK] https://www.valamis.com/hub/career-development-plan
+[EXTERNAL LINK] https://www.valamis.com/de/hub/karriere-entwicklungsplan
+[EXTERNAL LINK] https://www.valamis.com/fi/
+[EXTERNAL LINK] https://www.valamis.com/nl/
+[LI] Follow Valamis on LinkedIn
+[EXTERNAL LINK] https://www.linkedin.com/company/valamis/
+[LI] Follow Valamis on Instagram
+[EXTERNAL LINK] https://www.instagram.com/valamis/
+[LI] Follow Valamis on YouTube
+[EXTERNAL LINK] https://www.youtube.com/channel/UCs3v9ObvcknbJq0xALSqj-Q
+[EXTERNAL LINK] https://twitter.com/valamis
+[LI] Follow Valamis on Facebook
+[EXTERNAL LINK] https://www.facebook.com/valamisglobal
+
+[URL] https://www.valamis.com/hub/employee-development-areas
+[EXTERNAL LINK] https://www.valamis.com/
+[EXTERNAL LINK] https://www.valamis.com/hub
+[H1] Key areas of employee development
+[P] In this article, we will cover 12 key employee development areas and the most effective ways to develop them
+[P] Content Marketing Specialist, Valamis
+[EXTERNAL LINK] https://www.linkedin.com/in/julia-kuzmina/
+[P] May 30, 2024·updated October 15, 2024
+[P] Note: In combination with another article, “11 Employee development methods,” you will learn how to build comprehensive learning programs for your employees. This guide does not cover technical skills as they encompass numerous sub-skills, each critically important.
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-methods
+[H2] The list of key employee development areas (in our opinion)
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#flexibility
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#communication-skills
+[LI] Conflict resolution, tactfulness, work ethic
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#conflict-resolution
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#leadership-skills
+[LI] Organizational skills
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#organizational-skills
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#creativity-skills
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#goal-setting
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#stress-management
+[LI] Emotional intelligence
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#emotional-intelligence
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#collaboration
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#presentation
+[LI] Cross-functional knowledge
+[INTERNAL LINK] https://www.valamis.com/hub/employee-development-areas#cross-functional
+[P] Why it matters: Flexibility enables employees to adapt to changing circumstances, making them more resilient and valuable to the company.
+[P] Tip: Adaptability is the key to an employee’s well-being and ability to thrive within the work environment.
+[P] A static employee is one that will quickly become disengaged from excelling and moving forward, or worse, overwhelmed and overstressed, resulting in poor performance or an early evacuation/termination from the organization.
+[H3] Ways to help in developing flexibility:
+[P] 1. Job rotation: Rotate employees through different roles to expose them to various functions. 2. Agile training: Implement Agile methodologies that emphasize adaptability and quick responses to change. 3. Scenario planning: Conduct regular workshops where employees solve hypothetical problems that require quick thinking and adaptation. 4. Support networks: Often, the root cause of inflexibility in the workplace comes from a sense of feeling overwhelmed in a role.
+[P] Example: Encourage employees to use Trello, Jira or Monday boards to manage different types of tasks and adapt quickly to changes in project scope or deadlines.
+[H2] Career development plan template
+[P] This template helps employees and leaders plan together for career growth: set goals, assess skills, and make a plan.
+[INTERNAL LINK] https://www.valamis.com/publications/career-development-plan-template
+[P] Why it matters: Effective communication fosters collaboration and minimizes misunderstandings, leading to a more efficient and harmonious workplace.
+[H3] Ways to help in developing communication skills
+[P] Managers should meet frequently with their chain-of-command employees.
+[P] Additionally, as employees, it helps to hold regular touch-points with peers and colleagues to keep information, thoughts and an exchange of ideas flowing freely across the organization.
+[P] Some soft skills, such as listening and picking up visual cues and interpreting body language, need to be developed through formal training.
+[INTERNAL LINK] https://www.valamis.com/hub/hard-skills-vs-soft-skills#soft-skills
+[P] Organizations must invest in helping employees to communicate across company hierarchy – with peers, supervisors, senior management and executives.
+[P] Also, make sure you don’t forget various types of communication skills – written, oral, in-person and remote, including digital and traditional.
+[H5] 3. Assigning group projects
+[P] Working on group projects can also help bring out the best amongst individuals and teams.
+[P] Volunteering to work on cross-team projects helps communication, promotes team spirit and offers a change to hone interpersonal skills.
+[H5] 4. Cross-functional workshops
+[P] Engage in different discussions and situations.
+[P] Talk with people from other cultures, people with different personalities, people with different backgrounds, people in different positions in the company, etc.
+[P] Learn from them and try to understand their point of view.
+[P] Offering feedback, and accepting it positively, is often tough, but it can lead to positive skills and development outcomes.
+[P] Delivering criticism in a positive – often private – way allows such critique to be construed less as “reprimand” and more as advice. Accepting criticism without fear that “management is out to get you!” can turn critique into a learning point.
+[P] Again, present it as constructive feedback and not as just criticism. Also, encourage the two-way street of both asking for and giving feedback.
+[INTERNAL LINK] https://www.valamis.com/hub/constructive-feedback
+[H5] 6. Self-reflection and observing others
+[P] See how you act in different social situations.
+[LI] What situations make you feel uncomfortable or unable to act?
+[LI] What could you do to improve your communication etc?
+[P] Also, be cognizant of how other people act in different situations, maybe you can find out good tips on how to act (or what not to do) in certain situations.
+[P] If you want to get more details, read our article about improving communication skills.
+[INTERNAL LINK] https://www.valamis.com/hub/how-to-improve-communication-skills
+[H2] Conflict resolution, tactfulness, work ethic
+[P] Why it matters: These skills help maintain a positive work environment and ensure that conflicts are resolved constructively.
+[P] At the same time, doing what’s morally right, and taking on ethical positions in the workplace can generate conflict. It takes skill to navigate these three – sometimes conflicting – domains.
+[P] Here’s how employers and employees can work together on developing these skills for the good of individuals and the organization as a whole:
+[P] Employers can nominate employees, especially those who are being groomed for leadership roles, for conflict management and arbitration training.
+[INTERNAL LINK] https://www.valamis.com/hub/conflict-management-styles
+[P] Veteran employees can also coach less-senior staff on how to de-escalate potentially volatile situations.
+[P] Practicing listening skills, learning how to communicate during stressful situations, and mastering the art of being polite but assertive can also help diplomatically resolve workplace conflicts.
+[H5] 2. Role-playing scenarios
+[P] Practice real-life situations to develop tact and diplomacy.
+[H5] 3. Work ethic seminars
+[P] Workshops that highlight the importance of integrity, responsibility, and perseverance.
+[P] Tip: Employers can aid good work ethics by creating a safe, fair and healthy working environment for all employees.
+[P] Although at first blush, these may seem like disparate employee development areas examples, they are in fact highly correlated.
+[P] At the end of the day, if employers and employees work jointly to develop these skills, everyone will learn to “get along better” for the greater good of the self and the organization.
+[P] Leadership styles are diverse but to lead effectively there a few key skills that are common amongst good leaders.
+[INTERNAL LINK] https://www.valamis.com/hub/management-styles
+[P] Leadership skills are highly valued by employers; effective leaders can motivate and help others succeed within an organization.
+[P] A positive leader can lift a company above the competition, while a negative leader can make the work environment a dreadful, unmotivated and withering atmosphere.
+[INTERNAL LINK] https://www.valamis.com/blog/leadership-onboarding
+[H3] Ideas on how to develop leadership skills
+[P] To grow as a leader, it’s best to be led by another one.
+[P] Offer leadership training programs that cover essential skills such as decision-making, strategic thinking, and team management. Mentorship programs can also provide valuable guidance and support for emerging leaders​
+[P] Employees can volunteer their expertise – for instance taking company trainees under their wings, or speaking to a batch of novice workers at a convention, to hone some of these skills.
+[P] Forming task forces, to deal with unique organizational challenges, is a great practice run for future leaders.
+[P] It can also help employees hone their decision-making and problem-solving skills.
+[H5] 5. Participation in working groups and committees
+[P] Willing participation in working groups and committees is also a good way to polish leadership skills.
+[P] It also helps employees build self-confidence in their abilities as individual contributors to such workgroups.
+[H5] 6. Change the way the responsibility is taken
+[P] For example give a pilot project, with permission to fail, so they won’t be afraid and will act.
+[P] Often, the fear of failure is the most limiting factor in innovation and creativity.
+[P] There may be a fearful genius waiting in the wings that just needs a safe atmosphere to let their talents shine – give them that chance.
+[H4] Additional resources to read:
+[LI] Decoding leadership: What really matters
+[EXTERNAL LINK] https://www.mckinsey.com/featured-insights/leadership/decoding-leadership-what-really-matters
+[LI] 5 Ways to Turn Good Employees Into Great Leaders
+[EXTERNAL LINK] https://www.entrepreneur.com/article/242663
+[H2] Organizational skills
+[P] Balancing a multitude of tasks effectively and efficiently requires a specific set of skills:
+[P] The answer isn’t always what’s most important now, but more so, what needs to be completed first to allow for all the other big-picture pieces to fall into place.
+[P] This is part prioritization and part efficiency. By developing good habits and dialing in the daily workflow one can capitalize on all the available hours in a day.
+[P] If you’ve seen a master multi-tasker it’s incredible! They’re a blur of activity, accomplishing several things at once.
+[P] Tip: Just make sure to find a balance; often there’s a negative return on investment when we try to do too many things at once.
+[H5] 4) Managing appointments
+[P] No one wins when meetings are missed or appointments are routinely bumped.
+[P] Allot enough time for each appointment and add a little buffer time if you’re continually running late.
+[P] This isn’t just working, it’s getting things done.
+[P] If it’s taking you twice as long to do something as a colleague, reevaluate and get input on what’s making them so much more efficient.
+[P] The key here is details. Stick to a repeatable format that answers all the questions: who, when, where and what.
+[P] Be particularly mindful of travel time and conflicts.
+[P] Lose the notion that a deadline is just a suggestion.
+[P] All these employee development areas fall under the realm of work management.
+[P] Why it matters: Creativity fuels innovation, helping companies stay competitive and solve problems effectively. Innovation is often the result of inspiring greater creativity.
+[P] By developing a culture in which employees are encouraged to share ideas, a creative and innovative workplace can be fostered.
+[H3] Consider implementing these practices
+[LI] Ensure employees value the importance of creativity, much like any other skill, by setting time aside to formulate ideas.
+[LI] Try suggestion boxes, group sharing and team outings focused on new ideas.
+[LI] Task/job rotations (covered below) are a great way for employees to consider how one solution can be applied differently in their own field. Gaining new perspectives can be the perfect starting block for new processes.
+[LI] Be supportive of all ideas, even if they’re not initially “winners”, being enthusiastic grows the process for better ides in the future. Likewise, accept that new ideas come with a certain amount of risk, so don’t punish the ideas that fail; do, however, reward ideas that are impactful.
+[P] Use these techniques with the goal of developing the following skillset. In doing so, a creative work environment can thrive and produce truly impressive results.
+[P] Why it matters: Effective stress management leads to better well-being and productivity.
+[P] The benefits of creating a less stressful work environment are universally beneficial to both the employer and employee.
+[H3] Ways to lower stress in the workplace
+[P] Team members are much more comfortable with well-defined goals, knowing exactly what they need to focus on, why, and when it’s due.
+[H5] 2. Encourage movement and plan it into the workday
+[P] Teach at-desk/in-cubicle stress-relieving exerciseslike relaxation techniques, stretching, “standing Yoga” to help make the workday less stressful.
+[P] Consider on-premises fitness rooms.
+[P] Whether it’s exercise at the desk or a walk after lunch, support employees getting up and moving around. Breaks are okay during the work day!
+[H5] 3. Support employee efforts at stress management
+[P] Provide access to stress counseling. As employees use these services, they’ll develop the skills to better manage stressful situations on an ongoing basis.
+[H5] 4. Emphasize and train for time management
+[P] Have employees take a moment at the beginning of each day to plan and prioritize.
+[H5] 5. Offer a more flexible work environment
+[P] One of the greatest stressors most employees face is the balancing of family and home life with work.
+[P] If the work is being completed successfully and on time, don’t emphasize the traditional nine to five work schedule. Investigate alternative and hybrid models, e.g., 9/80 schedule.
+[INTERNAL LINK] https://www.valamis.com/hub/9-80-work-schedule
+[P] Things come up, allow the employee to handle them without adding additional stress.
+[H4] Additional resources to read about stress management
+[P] What Managers Can Do to Ease Workplace Stress
+[EXTERNAL LINK] https://www.shrm.org/resourcesandtools/hr-topics/employee-relations/pages/how-managers-can-help-stressed-workers-.aspx
+[H2] Emotional intelligence
+[P] Why it matters: High emotional intelligence improves interpersonal relationships and team dynamics.
+[INTERNAL LINK] https://www.valamis.com/hub/emotional-intelligence-in-the-workplace
+[LI] Take courses that focus on self-awareness, self-regulation, and empathy.
+[LI] Keep a journal or engage in regular self-reflection.
+[LI] Participate in exercises that build trust and understanding among team members.
+[P] Implement self-awareness training and empathy exercises. Encourage mindfulness practices to help employees manage stress and enhance emotional regulation​.
+[H2] How to conduct a skills gap analysis and what to do next
+[P] Start building your foundation for strategic workforce development.
+[INTERNAL LINK] https://www.valamis.com/publications/skills-gap-analysis-guide
+[P] Why it matters: Clear goals provide direction and motivation, aligning individual efforts with company objectives.
+[LI] Teach the principles of setting Specific, Measurable, Achievable, Relevant, and Time-bound goals.
+[LI] Use tools like OKR software (Objectives and Key Results) such as Weekdone or Betterworks to track progress.
+[LI] Encourage the creation of digital vision boards using platforms like Canva or FigJam
+[LI] Example: Implement OKR software to set and track progress towards SMART goals, ensuring alignment with organizational objectives.
+[P] Why it matters: Collaboration harnesses diverse perspectives, leading to innovative solutions and cohesive teams.
+[LI] Facilitate collaborative projects using platforms like Microsoft Teams or Basecamp.
+[LI] Leverage tools like Slack, Google Workspace, or Trello to enhance communication and collaboration.
+[LI] Create teams with members from different departments to work on joint projects. Example: Use Microsoft Teams for real-time collaboration on documents and projects, enhancing teamwork and productivity.
+[P] Why it matters: Strong presentation skills enable employees to effectively convey ideas and influence others.
+[H5] 1. Conduct training workshops
+[P] Conduct public speaking workshops and provide opportunities for employees to practice their presentation skills. Use video recordings to review and refine their techniques
+[H5] 2. Regular practice sessions
+[P] Schedule regular practice sessions where employees can present in front of their peers and receive constructive feedback. This helps build confidence and improve skills through repetition.
+[H5] 3. Provide real-world practice opportunities
+[P] Give employees opportunities to present in real-world scenarios, such as client meetings, conferences, or internal events. This practical experience is invaluable for building confidence and competence.
+[H2] Cross-functional knowledge
+[P] Why it matters:Understanding different functions within the company fosters better collaboration and problem-solving.
+[H5] 1. Job shadowing and job rotation
+[LI] Arrange job shadowing opportunities across departments.
+[LI] Implement job rotation programs and cross-training workshops. Encourage participation in cross-departmental projects and hackathons to solve company-wide challenges​
+[H5] 2. Cross-training programs
+[LI] Provide training on various functions within the company using your LMS.
+[INTERNAL LINK] https://www.valamis.com/hub/what-is-an-lms
+[LI] Conduct workshops where experts from various departments teach employees the basics of their functions. This helps employees gain a well-rounded understanding of how different parts of the organization operate.
+[H5] 3. Interdepartmental projects
+[P] Encourage employees to participate in cross-departmental projects. Working on joint projects helps them learn how different departments collaborate to achieve common goals.
+[H5] 4. Hackathons and innovation challenges
+[P] Organize hackathons or innovation challenges that require input and collaboration from multiple departments. These events encourage employees to use their diverse skills to solve complex problems.
+[H3] How a modern LMS can help in employee development
+[P] A modern Learning Management System (LMS) like Valamis can be a game-changer in facilitating these areas of development. Here’s how:
+[INTERNAL LINK] https://www.valamis.com/hub/what-is-an-lms
+[INTERNAL LINK] https://www.valamis.com/
+[LI] Flexible learning paths: Valamis offers personalized learning experiences, allowing employees to focus on areas where they need the most improvement.
+[LI] Interactive content: Engaging and interactive modules enhance learning retention and make training more enjoyable.
+[LI] Progress tracking: Both employees and managers can track progress and identify areas needing further development.
+[LI] Accessibility: Online access ensures that employees can learn at their own pace and convenience, promoting continuous development.
+[P] By investing in a robust LMS like Valamis, your company can ensure that employees are equipped with the necessary skills to thrive in a dynamic business environment. Prioritizing these key areas of development not only enhances individual performance but also drives overall organizational success.
+[INTERNAL LINK] https://www.valamis.com/
+[P] Did you like it? Help us spread the word!
+[EXTERNAL LINK] https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.valamis.com%2Fhub%2Femployee-development-areas&title=Key areas of employee development
+[EXTERNAL LINK] https://www.facebook.com/sharer/sharer.php?u=https://www.valamis.com/hub/employee-development-areas&t=Key%20areas%20of%20employee%20development
+[EXTERNAL LINK] https://twitter.com/share?text=Key areas of employee development&url=https%3A%2F%2Fwww.valamis.com%2Fhub%2Femployee-development-areas
+[LI] Employee performance management
+[EXTERNAL LINK] https://www.valamis.com/tag/employee-performance-management
+[LI] Learning and Development
+[EXTERNAL LINK] https://www.valamis.com/tag/learning-and-development
+[H3] Skill gap analysis guide
+[P] Identify skill gaps and close them fast. Get your guide now!
+[EXTERNAL LINK] https://www.valamis.com/publications/skills-gap-analysis-guide
+[LI] The list of key employee development areas (in our opinion)
+[LI] Conflict resolution, tactfulness, work ethic
+[LI] Organizational skills
+[LI] Emotional intelligence
+[LI] Cross-functional knowledge
+[H2] You might be interested in
+[H3] Learning and development fundamentals
+[EXTERNAL LINK] https://www.valamis.com/hub/learning-and-development
+[H3] The meaning of Learning Management System (LMS)
+[EXTERNAL LINK] https://www.valamis.com/hub/what-is-an-lms
+[EXTERNAL LINK] https://www.valamis.com/hub/blooms-taxonomy
+[H2] Helping businesses embrace their future through L&D.
+[P] Core Leader in 2024 Fosway 9-Grid™ for Learning Systems
+[P] ISO 27001 • ISO 27017 • ISAE 3000 type II
+[EXTERNAL LINK] https://www.valamis.com/hub/employee-development-areas
+[EXTERNAL LINK] https://www.valamis.com/de/hub/bereiche-der-mitarbeiterentwicklung
+[EXTERNAL LINK] https://www.valamis.com/fi/
+[EXTERNAL LINK] https://www.valamis.com/nl/
+[LI] Follow Valamis on LinkedIn
+[EXTERNAL LINK] https://www.linkedin.com/company/valamis/
+[LI] Follow Valamis on Instagram
+[EXTERNAL LINK] https://www.instagram.com/valamis/
+[LI] Follow Valamis on YouTube
+[EXTERNAL LINK] https://www.youtube.com/channel/UCs3v9ObvcknbJq0xALSqj-Q
+[EXTERNAL LINK] https://twitter.com/valamis
+[LI] Follow Valamis on Facebook
+[EXTERNAL LINK] https://www.facebook.com/valamisglobal
