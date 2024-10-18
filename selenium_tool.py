@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 import re
@@ -86,76 +86,33 @@ def handle_cookie_consent(driver):
     except:
         pass
 
-def detect_pagination_type(driver):
-    pagination_selectors = {
-        'numbered': 'button.archive__pagination__number, .pagination__number, .page-numbers, [class*="pagination"] button',
-        'load_more': 'button[class*="load-more"], .load-more, .more, #load-more',
-        'infinite_scroll': '.infinite-scroll, .scroll-container'
-    }
+def gather_page_content(driver, base_url):
+    """Gather content from current page"""
+    links = []
     
-    for ptype, selector in pagination_selectors.items():
-        if len(driver.find_elements(By.CSS_SELECTOR, selector)) > 0:
-            return ptype
-    return None
+    # Get all article links on current page
+    article_links = [link.get_attribute('href') for link in driver.find_elements(By.TAG_NAME, 'a')
+                    if link.get_attribute('href') and 
+                    is_valid_url(link.get_attribute('href')) and 
+                    link.get_attribute('href').startswith(base_url) and
+                    '/hub/' in link.get_attribute('href')]
+    
+    links.extend(article_links)
+    return list(set(links))  # Remove duplicates
 
-def handle_numbered_pagination(driver):
-    last_page_content = ''
-    page = 1
-    while True:
-        try:
-            current_content = driver.page_source
-            if current_content == last_page_content:
-                break
-                
-            next_button = WebDriverWait(driver, 5).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 
-                    f'button[class*="pagination"][data-page="{page + 1}"], '
-                    f'.pagination__number[data-page="{page + 1}"], '
-                    f'a.page-numbers[href*="page/{page + 1}"]'))
-            )
-            
-            driver.execute_script("arguments[0].scrollIntoView(true);", next_button)
-            driver.execute_script("arguments[0].click();", next_button)
-            time.sleep(2)
-            
-            last_page_content = current_content
-            page += 1
-            
-        except (TimeoutException, NoSuchElementException):
-            break
-
-def handle_load_more(driver):
-    while True:
-        try:
-            load_more = WebDriverWait(driver, 5).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, 
-                    'button[class*="load-more"], .load-more, .more, #load-more'))
-            )
-            driver.execute_script("arguments[0].scrollIntoView(true);", load_more)
-            driver.execute_script("arguments[0].click();", load_more)
-            time.sleep(2)
-        except (TimeoutException, NoSuchElementException):
-            break
-
-def handle_infinite_scroll(driver):
-    last_height = driver.execute_script("return document.body.scrollHeight")
-    while True:
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(2)
-        
-        new_height = driver.execute_script("return document.body.scrollHeight")
-        if new_height == last_height:
-            break
-        last_height = new_height
-
-def load_more_content(driver):
+def load_more_content(driver, base_url):
+    """Load and gather content from all pages"""
+    all_links = []
+    
     try:
         while True:
+            # Gather content from current page
+            current_links = gather_page_content(driver, base_url)
+            all_links.extend(current_links)
+            
             try:
-                # Try to find the next page button
+                # Find next button
                 next_button = None
-                
-                # First try numbered pagination
                 page_buttons = driver.find_elements(By.CSS_SELECTOR, "button.archive__pagination__number")
                 current_page = next(
                     (btn for btn in page_buttons if 'active' in btn.get_attribute('class').split()), 
@@ -169,7 +126,6 @@ def load_more_content(driver):
                         None
                     )
                 
-                # If no numbered button found, try the next arrow
                 if not next_button:
                     next_button = driver.find_element(
                         By.CSS_SELECTOR, 
@@ -183,13 +139,15 @@ def load_more_content(driver):
                 driver.execute_script("arguments[0].scrollIntoView(true);", next_button)
                 time.sleep(1)
                 driver.execute_script("arguments[0].click();", next_button)
-                time.sleep(3)  # Wait for new content to load
+                time.sleep(3)
                 
             except (NoSuchElementException, StaleElementReferenceException):
                 break
                 
     except Exception as e:
         st.error(f"Error loading more content: {str(e)}")
+        
+    return list(set(all_links))  # Remove duplicates
 
 def extract_content(driver, base_url, exclude_types):
     content = []
@@ -214,20 +172,13 @@ def extract_content(driver, base_url, exclude_types):
 
     return content
 
-def gather_links(driver, base_url):
-    links = driver.find_elements(By.TAG_NAME, 'a')
-    return [link.get_attribute('href') for link in links 
-            if link.get_attribute('href') and 
-            is_valid_url(link.get_attribute('href')) and 
-            link.get_attribute('href').startswith(base_url)]
-
 def scrape_single_page(url, base_url, exclude_types):
     options = create_chrome_options()
     driver = webdriver.Chrome(service=Service(), options=options)
     try:
         driver.get(url)
         handle_cookie_consent(driver)
-        load_more_content(driver)
+        time.sleep(2)
         return extract_content(driver, base_url, exclude_types)
     finally:
         driver.quit()
@@ -235,26 +186,24 @@ def scrape_single_page(url, base_url, exclude_types):
 def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, target_date, progress_bar):
     visited = set()
     all_content = []
-    links_to_scrape = [(initial_url, 0)]
     
+    # First get all paginated links
     options = create_chrome_options()
     driver = webdriver.Chrome(service=Service(), options=options)
     try:
         driver.get(initial_url)
         handle_cookie_consent(driver)
-        load_more_content(driver)
-        initial_links = gather_links(driver, base_url)
-        for link in initial_links:
-            if link not in visited and not is_unwanted_link(link, base_url):
-                links_to_scrape.append((link, 1))
+        time.sleep(2)
+        all_links = load_more_content(driver, base_url)
     finally:
         driver.quit()
-
+    
+    # Now scrape each article in parallel
     with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_url = {}
-        for url, depth in links_to_scrape:
-            if depth <= max_depth and (max_urls is None or len(visited) < max_urls):
-                if url not in visited:
+        for url in all_links:
+            if max_urls is None or len(visited) < max_urls:
+                if url not in visited and not is_unwanted_link(url, base_url):
                     visited.add(url)
                     future_to_url[executor.submit(scrape_single_page, url, base_url, exclude_types)] = url
 
