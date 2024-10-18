@@ -150,15 +150,44 @@ def handle_infinite_scroll(driver):
 
 def load_more_content(driver):
     try:
-        pagination_type = detect_pagination_type(driver)
-        
-        if pagination_type == 'numbered':
-            handle_numbered_pagination(driver)
-        elif pagination_type == 'load_more':
-            handle_load_more(driver)
-        elif pagination_type == 'infinite_scroll':
-            handle_infinite_scroll(driver)
-            
+        while True:
+            try:
+                # Try to find the next page button
+                next_button = None
+                
+                # First try numbered pagination
+                page_buttons = driver.find_elements(By.CSS_SELECTOR, "button.archive__pagination__number")
+                current_page = next(
+                    (btn for btn in page_buttons if 'active' in btn.get_attribute('class').split()), 
+                    None
+                )
+                
+                if current_page:
+                    current_num = int(current_page.text)
+                    next_button = next(
+                        (btn for btn in page_buttons if int(btn.text) == current_num + 1),
+                        None
+                    )
+                
+                # If no numbered button found, try the next arrow
+                if not next_button:
+                    next_button = driver.find_element(
+                        By.CSS_SELECTOR, 
+                        "button.archive__pagination__arrow--next:not([disabled])"
+                    )
+                
+                if not next_button:
+                    break
+                    
+                # Click and wait for content
+                driver.execute_script("arguments[0].scrollIntoView(true);", next_button)
+                time.sleep(1)
+                driver.execute_script("arguments[0].click();", next_button)
+                time.sleep(3)  # Wait for new content to load
+                
+            except (NoSuchElementException, StaleElementReferenceException):
+                break
+                
     except Exception as e:
         st.error(f"Error loading more content: {str(e)}")
 
