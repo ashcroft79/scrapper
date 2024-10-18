@@ -6,6 +6,8 @@ import re
 from collections import defaultdict
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import pickle
+import os
 
 class UniversalWebScraper:
     def __init__(self, base_url, max_depth=3, exclusions=None, include_params=False):
@@ -88,8 +90,18 @@ class UniversalWebScraper:
                     st.error(f"Error scraping {url}: {str(e)}")
         return results
 
+@st.cache_data
+def create_site_map(base_url, max_depth, exclusions, include_params):
+    scraper = UniversalWebScraper(base_url, max_depth, exclusions, include_params)
+    scraper.create_site_map()
+    return scraper.site_map
+
 def main():
     st.title("Universal Web Scraper")
+
+    # Use session state to store the site map
+    if 'site_map' not in st.session_state:
+        st.session_state.site_map = None
 
     base_url = st.text_input("Enter the base URL to scrape:")
     max_depth = st.number_input("Maximum depth to crawl:", min_value=1, max_value=5, value=3)
@@ -103,35 +115,37 @@ def main():
             st.error("Please enter a base URL.")
             return
 
-        scraper = UniversalWebScraper(base_url, max_depth, exclusions, include_params)
-        
         with st.spinner("Creating site map..."):
-            scraper.create_site_map()
+            st.session_state.site_map = create_site_map(base_url, max_depth, exclusions, include_params)
 
         st.success("Site map created!")
-        
-        for depth, urls in scraper.site_map.items():
-            st.subheader(f"Depth {depth}")
-            selected_urls = st.multiselect(f"Select URLs to scrape at depth {depth}:", urls, key=f"depth_{depth}")
-            if selected_urls:
-                if st.button(f"Scrape selected URLs at depth {depth}", key=f"scrape_{depth}"):
-                    with st.spinner("Scraping selected URLs..."):
-                        results = scraper.scrape_selected_urls(selected_urls)
-                    
-                    for url, content in results.items():
-                        st.subheader(f"Content from {url}")
-                        st.text_area("", content, height=200)
+
+    if st.session_state.site_map:
+        st.subheader("Site Map")
+        for depth, urls in st.session_state.site_map.items():
+            with st.expander(f"Depth {depth} ({len(urls)} URLs)"):
+                selected_urls = st.multiselect(f"Select URLs to scrape at depth {depth}:", urls, key=f"depth_{depth}")
+                if selected_urls:
+                    if st.button(f"Scrape selected URLs at depth {depth}", key=f"scrape_{depth}"):
+                        scraper = UniversalWebScraper(base_url, max_depth, exclusions, include_params)
+                        with st.spinner("Scraping selected URLs..."):
+                            results = scraper.scrape_selected_urls(selected_urls)
                         
-                        # Save content to a file
-                        filename = f"{urlparse(url).netloc}_{urlparse(url).path.replace('/', '_')}.txt"
-                        with open(filename, "w", encoding="utf-8") as f:
-                            f.write(content)
-                        st.download_button(
-                            label=f"Download content for {url}",
-                            data=content,
-                            file_name=filename,
-                            mime="text/plain"
-                        )
+                        for url, content in results.items():
+                            st.subheader(f"Content from {url}")
+                            st.text_area("", content, height=200, key=f"content_{url}")
+                            
+                            # Save content to a file
+                            filename = f"{urlparse(url).netloc}_{urlparse(url).path.replace('/', '_')}.txt"
+                            with open(filename, "w", encoding="utf-8") as f:
+                                f.write(content)
+                            st.download_button(
+                                label=f"Download content for {url}",
+                                data=content,
+                                file_name=filename,
+                                mime="text/plain",
+                                key=f"download_{url}"
+                            )
 
 if __name__ == "__main__":
     main()
