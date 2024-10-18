@@ -32,9 +32,23 @@ def clean_text(text):
     return re.sub(r'\s+', ' ', text).strip()
 
 def should_exclude(element):
+    # Classes and IDs to exclude
     exclude_classes = ['nav', 'menu', 'footer', 'sidebar', 'advertisement', 'cookie', 'popup']
     exclude_ids = ['nav', 'menu', 'footer', 'sidebar', 'ad']
     
+    # Cookie-related keywords to exclude
+    cookie_keywords = [
+        'cookie', 'gdpr', 'privacy', 'tracking', 'analytics', 'consent',
+        'session', 'storage', 'duration', 'browser', 'local storage',
+        'pixel tracker', 'http cookie'
+    ]
+    
+    # Check text content for cookie-related terms
+    text = element.get_text().lower()
+    if any(keyword in text for keyword in cookie_keywords):
+        return True
+
+    # Check element and parent elements for excluded classes/IDs
     for parent in element.parents:
         if parent.has_attr('class'):
             if any(cls in parent.get('class', []) for cls in exclude_classes):
@@ -42,6 +56,7 @@ def should_exclude(element):
         if parent.has_attr('id'):
             if any(id in parent.get('id', '') for id in exclude_ids):
                 return True
+        
     return False
 
 def is_blog_post(text):
