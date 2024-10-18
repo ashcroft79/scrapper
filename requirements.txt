@@ -6,3 +6,6 @@ webdriver-manager
 selenium-wire
 blinker==1.6.2
 setuptools
+playwright
+streamlit
+beautifulsoup4
