@@ -2,3 +2,4 @@ streamlit
 selenium
 beautifulsoup4
 webdriver-manager
+futures

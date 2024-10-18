@@ -2,7 +2,6 @@ import streamlit as st
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -13,6 +12,7 @@ import re
 import hashlib
 import time
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 def is_valid_url(url):
     try:
@@ -60,22 +60,45 @@ def is_unwanted_link(url, base_url):
 
 def handle_cookie_consent(driver):
     try:
-        accept_button = WebDriverWait(driver, 10).until(
+        accept_button = WebDriverWait(driver, 5).until(
             EC.element_to_be_clickable((By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll"))
         )
         accept_button.click()
-        time.sleep(2)
+        time.sleep(1)
     except:
         pass
 
+def detect_dynamic_content(driver, timeout=5):
+    try:
+        old_page = driver.page_source
+        time.sleep(1)
+        
+        for _ in range(timeout):
+            new_page = driver.page_source
+            if new_page != old_page:
+                old_page = new_page
+                time.sleep(1)
+            else:
+                break
+    except Exception as e:
+        st.error(f"Error detecting dynamic content: {str(e)}")
+
 def load_more_content(driver):
     try:
+        last_height = driver.execute_script("return document.body.scrollHeight")
         while True:
-            load_more = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, ".load-more-button"))
-            )
-            driver.execute_script("arguments[0].click();", load_more)
-            time.sleep(2)
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            detect_dynamic_content(driver, timeout=3)
+            
+            new_height = driver.execute_script("return document.body.scrollHeight")
+            if new_height == last_height:
+                break
+            last_height = new_height
+            
+            load_more = driver.find_elements(By.CSS_SELECTOR, ".load-more-button")
+            if load_more:
+                driver.execute_script("arguments[0].click();", load_more[0])
+                detect_dynamic_content(driver, timeout=3)
     except:
         pass
 
@@ -102,47 +125,85 @@ def extract_content(driver, base_url, exclude_types):
 
     return content
 
-def scrape_page(driver, base_url, url, depth, max_depth, visited, exclude_types, max_urls, target_date, progress_bar):
+def create_driver():
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    return webdriver.Chrome(service=Service(), options=options)
+
+def scrape_url(args):
+    url, base_url, depth, exclude_types, target_date = args
+    driver = create_driver()
+    content = []
+    
+    try:
+        driver.get(url)
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+        
+        handle_cookie_consent(driver)
+        load_more_content(driver)
+        
+        page_content = extract_content(driver, base_url, exclude_types)
+        if target_date is None or is_after_date("\n".join(page_content), target_date):
+            content.extend([f"\n[URL] {url}\n"])
+            content.extend(page_content)
+            
+    except Exception as e:
+        st.error(f"Error scraping {url}: {str(e)}")
+    finally:
+        driver.quit()
+        
+    return url, content
+
+def scrape_pages(base_url, url, depth, max_depth, visited, exclude_types, max_urls, target_date, progress_bar):
     if depth > max_depth or url in visited or (max_urls is not None and len(visited) >= max_urls):
         return []
 
     if not url.startswith(base_url) or is_unwanted_link(url, base_url):
         return []
 
+    all_content = []
+    to_scrape = [(url, base_url, depth, exclude_types, target_date)]
     visited.add(url)
-    content = []
 
-    try:
-        driver.get(url)
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
-        
-        progress_bar.text(f"Scraping: {url}")
-        st.session_state.scraped_urls.append(url)
+    while to_scrape and (max_urls is None or len(visited) < max_urls):
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            future_to_url = {executor.submit(scrape_url, args): args[0] for args in to_scrape}
+            to_scrape = []
 
-        handle_cookie_consent(driver)
-        load_more_content(driver)
+            for future in as_completed(future_to_url):
+                url = future_to_url[future]
+                progress_bar.text(f"Scraping: {url}")
+                try:
+                    scraped_url, content = future.result()
+                    all_content.extend(content)
+                    
+                    if depth < max_depth:
+                        driver = create_driver()
+                        try:
+                            driver.get(url)
+                            links = driver.find_elements(By.TAG_NAME, 'a')
+                            internal_links = [link.get_attribute('href') for link in links 
+                                           if link.get_attribute('href') and 
+                                           is_valid_url(link.get_attribute('href')) and 
+                                           link.get_attribute('href').startswith(base_url) and
+                                           link.get_attribute('href') != url and
+                                           not is_unwanted_link(link.get_attribute('href'), base_url) and
+                                           link.get_attribute('href') not in visited]
+                            
+                            for next_url in set(internal_links):
+                                if next_url not in visited and (max_urls is None or len(visited) < max_urls):
+                                    visited.add(next_url)
+                                    to_scrape.append((next_url, base_url, depth + 1, exclude_types, target_date))
+                                    
+                        finally:
+                            driver.quit()
+                            
+                except Exception as e:
+                    st.error(f"Error processing {url}: {str(e)}")
 
-        page_content = extract_content(driver, base_url, exclude_types)
-        if target_date is None or is_after_date("\n".join(page_content), target_date):
-            content.extend([f"\n[URL] {url}\n"])
-            content.extend(page_content)
-
-        if depth < max_depth and (max_urls is None or len(visited) < max_urls):
-            links = driver.find_elements(By.TAG_NAME, 'a')
-            internal_links = [link.get_attribute('href') for link in links 
-                            if link.get_attribute('href') and 
-                            is_valid_url(link.get_attribute('href')) and 
-                            link.get_attribute('href').startswith(base_url) and
-                            link.get_attribute('href') != url and
-                            not is_unwanted_link(link.get_attribute('href'), base_url)]
-            
-            for next_url in set(internal_links):
-                content.extend(scrape_page(driver, base_url, next_url, depth + 1, max_depth, visited, exclude_types, max_urls, target_date, progress_bar))
-
-    except Exception as e:
-        st.error(f"Error scraping {url}: {str(e)}")
-
-    return content
+    return all_content
 
 def main():
     st.title("Advanced Web Scraper for Competitor Analysis")
@@ -167,17 +228,9 @@ def main():
         progress_bar = st.empty()
         st.session_state.scraped_urls = []
         
-        options = Options()
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        
-        service = Service()
-        driver = webdriver.Chrome(service=service, options=options)
-        
         try:
             target_date = datetime.combine(date_filter, datetime.min.time()) if date_filter else None
-            content = scrape_page(driver, url, url, 0, max_depth, set(), exclude_types, max_urls, target_date, progress_bar)
+            content = scrape_pages(url, url, 0, max_depth, set(), exclude_types, max_urls, target_date, progress_bar)
             
             if content:
                 filename = f"{urlparse(url).netloc}_analysis.txt"
@@ -207,8 +260,8 @@ def main():
             else:
                 st.warning("No content could be extracted. Please check the URL and try again.")
             
-        finally:
-            driver.quit()
+        except Exception as e:
+            st.error(f"Error during scraping: {str(e)}")
 
 if __name__ == "__main__":
     main()
