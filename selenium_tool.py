@@ -32,23 +32,19 @@ def clean_text(text):
     return re.sub(r'\s+', ' ', text).strip()
 
 def should_exclude(element):
-    # Classes and IDs to exclude
     exclude_classes = ['nav', 'menu', 'footer', 'sidebar', 'advertisement', 'cookie', 'popup']
     exclude_ids = ['nav', 'menu', 'footer', 'sidebar', 'ad']
     
-    # Cookie-related keywords to exclude
     cookie_keywords = [
         'cookie', 'gdpr', 'privacy', 'tracking', 'analytics', 'consent',
         'session', 'storage', 'duration', 'browser', 'local storage',
         'pixel tracker', 'http cookie'
     ]
     
-    # Check text content for cookie-related terms
     text = element.get_text().lower()
     if any(keyword in text for keyword in cookie_keywords):
         return True
 
-    # Check element and parent elements for excluded classes/IDs
     for parent in element.parents:
         if parent.has_attr('class'):
             if any(cls in parent.get('class', []) for cls in exclude_classes):
@@ -56,7 +52,7 @@ def should_exclude(element):
         if parent.has_attr('id'):
             if any(id in parent.get('id', '') for id in exclude_ids):
                 return True
-        
+    
     return False
 
 def is_blog_post(text):
@@ -89,6 +85,34 @@ def handle_cookie_consent(driver):
         time.sleep(1)
     except:
         pass
+
+def load_more_content(driver):
+    try:
+        # Handle initial content load
+        time.sleep(2)
+        
+        # Try pagination
+        page_number = 1
+        while True:
+            try:
+                # Find pagination buttons
+                next_button = WebDriverWait(driver, 3).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, f".archive__pagination__number[data-page='{page_number + 1}']"))
+                )
+                
+                # Click next page button
+                driver.execute_script("arguments[0].scrollIntoView(true);", next_button)
+                driver.execute_script("arguments[0].click();", next_button)
+                
+                # Wait for content to load
+                time.sleep(2)
+                page_number += 1
+                
+            except (TimeoutException, NoSuchElementException):
+                break
+                
+    except Exception as e:
+        st.error(f"Error loading pagination: {str(e)}")
 
 def detect_dynamic_content(driver, timeout=5):
     try:
@@ -157,6 +181,7 @@ def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, targ
     try:
         driver.get(initial_url)
         handle_cookie_consent(driver)
+        load_more_content(driver)  # Added load_more_content call here
         detect_dynamic_content(driver)
         initial_links = gather_links(driver, base_url)
         for link in initial_links:
