@@ -14,6 +14,13 @@ import time
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+def create_chrome_options():
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    return options
+
 def is_valid_url(url):
     try:
         result = urlparse(url)
@@ -114,7 +121,8 @@ def gather_links(driver, base_url):
             link.get_attribute('href').startswith(base_url)]
 
 def scrape_single_page(url, base_url, exclude_types):
-    driver = webdriver.Chrome(service=Service(), options=chrome_options)
+    options = create_chrome_options()
+    driver = webdriver.Chrome(service=Service(), options=options)
     try:
         driver.get(url)
         handle_cookie_consent(driver)
@@ -124,17 +132,13 @@ def scrape_single_page(url, base_url, exclude_types):
         driver.quit()
 
 def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, target_date, progress_bar):
-    chrome_options = Options()
-    chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
-    
     visited = set()
     all_content = []
     links_to_scrape = [(initial_url, 0)]  # (url, depth)
     
     # First get all links from the initial page
-    driver = webdriver.Chrome(service=Service(), options=chrome_options)
+    options = create_chrome_options()
+    driver = webdriver.Chrome(service=Service(), options=options)
     try:
         driver.get(initial_url)
         handle_cookie_consent(driver)
