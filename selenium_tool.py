@@ -88,31 +88,34 @@ def handle_cookie_consent(driver):
 
 def load_more_content(driver):
     try:
-        # Handle initial content load
-        time.sleep(2)
+        last_url_count = 0
+        current_url_count = len(driver.find_elements(By.CSS_SELECTOR, 'a[href*="/hub/"]'))
         
-        # Try pagination
-        page_number = 1
+        # Keep clicking pagination until no new links are found
+        page = 2  # Start from page 2 since we're already on page 1
         while True:
             try:
-                # Find pagination buttons
-                next_button = WebDriverWait(driver, 3).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, f".archive__pagination__number[data-page='{page_number + 1}']"))
+                # Locate and click the next page button
+                page_button = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, f'button.archive__pagination__number[data-page="{page}"]'))
                 )
+                driver.execute_script("arguments[0].scrollIntoView(true);", page_button)
+                driver.execute_script("arguments[0].click();", page_button)
+                time.sleep(2)  # Wait for content to load
                 
-                # Click next page button
-                driver.execute_script("arguments[0].scrollIntoView(true);", next_button)
-                driver.execute_script("arguments[0].click();", next_button)
-                
-                # Wait for content to load
-                time.sleep(2)
-                page_number += 1
+                # Check if new content was loaded
+                current_url_count = len(driver.find_elements(By.CSS_SELECTOR, 'a[href*="/hub/"]'))
+                if current_url_count <= last_url_count:
+                    break
+                    
+                last_url_count = current_url_count
+                page += 1
                 
             except (TimeoutException, NoSuchElementException):
                 break
                 
     except Exception as e:
-        st.error(f"Error loading pagination: {str(e)}")
+        st.error(f"Error loading more content: {str(e)}")
 
 def detect_dynamic_content(driver, timeout=5):
     try:
