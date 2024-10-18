@@ -1,1 +1,4 @@
-playwright install chromium
+chromium
+libnss3
+libnspr4
+libdbus-glib-1-2
