@@ -5,4 +5,3 @@ selenium
 webdriver-manager
 selenium-wire
 blinker==1.6.2
-pkg_resources
