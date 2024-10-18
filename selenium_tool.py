@@ -77,82 +77,162 @@ def is_unwanted_link(url, base_url):
     return any(pattern in url.lower() for pattern in unwanted_patterns) or is_external
 
 def handle_cookie_consent(driver):
-    try:
-        accept_button = WebDriverWait(driver, 5).until(
-            EC.element_to_be_clickable((By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll"))
-        )
-        accept_button.click()
-        time.sleep(1)
-    except:
-        pass
+    common_selectors = [
+        '#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll',
+        '.cookie-accept',
+        '#accept-cookies',
+        '[aria-label="Accept cookies"]',
+    ]
+    
+    for selector in common_selectors:
+        try:
+            accept_button = WebDriverWait(driver, 2).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
+            )
+            accept_button.click()
+            time.sleep(1)
+            return
+        except:
+            continue
 
 def gather_page_content(driver, base_url):
-    """Gather content from current page"""
+    """Gather content from current page using multiple strategies"""
     links = []
     
-    # Get all article links on current page
-    article_links = [link.get_attribute('href') for link in driver.find_elements(By.TAG_NAME, 'a')
-                    if link.get_attribute('href') and 
-                    is_valid_url(link.get_attribute('href')) and 
-                    link.get_attribute('href').startswith(base_url) and
-                    '/hub/' in link.get_attribute('href')]
-    
-    links.extend(article_links)
-    return list(set(links))  # Remove duplicates
+    # Strategy 1: Article cards
+    articles = driver.find_elements(By.CSS_SELECTOR, "article.c-article, div.article, .post, .blog-post")
+    for article in articles:
+        try:
+            link = article.find_element(By.CSS_SELECTOR, "a.card-title, h2 a, h3 a, .title a").get_attribute('href')
+            if link and is_valid_url(link) and link.startswith(base_url):
+                links.append(link)
+        except:
+            continue
+
+    # Strategy 2: General article links 
+    article_links = driver.find_elements(By.TAG_NAME, 'a')
+    for link in article_links:
+        try:
+            href = link.get_attribute('href')
+            if href and is_valid_url(href) and href.startswith(base_url):
+                if any(pattern in href.lower() for pattern in ['/article/', '/blog/', '/post/', '/news/']):
+                    links.append(href)
+        except:
+            continue
+
+    return list(set(links))
 
 def load_more_content(driver, base_url):
-    """Load and gather content from all pages"""
+    """Load content using multiple strategies"""
     all_links = []
+    content_loaded = True
     
-    try:
-        while True:
-            # Gather content from current page
-            current_links = gather_page_content(driver, base_url)
-            all_links.extend(current_links)
+    while content_loaded:
+        current_links = gather_page_content(driver, base_url)
+        new_links = [link for link in current_links if link not in all_links]
+        
+        if not new_links:
+            content_loaded = False
+            continue
             
-            try:
-                # Find next button
-                next_button = None
-                page_buttons = driver.find_elements(By.CSS_SELECTOR, "button.archive__pagination__number")
-                current_page = next(
-                    (btn for btn in page_buttons if 'active' in btn.get_attribute('class').split()), 
-                    None
-                )
-                
-                if current_page:
-                    current_num = int(current_page.text)
-                    next_button = next(
-                        (btn for btn in page_buttons if int(btn.text) == current_num + 1),
+        all_links.extend(new_links)
+        
+        # Strategy 1: Try pagination buttons
+        try:
+            next_button = None
+            pagination_selectors = [
+                "button.archive__pagination__number",
+                "a.next",
+                ".pagination .next",
+                "[aria-label='Next page']"
+            ]
+            
+            for selector in pagination_selectors:
+                buttons = driver.find_elements(By.CSS_SELECTOR, selector)
+                if buttons:
+                    current_page = next(
+                        (btn for btn in buttons if 'active' in btn.get_attribute('class').split()),
                         None
                     )
-                
-                if not next_button:
-                    next_button = driver.find_element(
-                        By.CSS_SELECTOR, 
-                        "button.archive__pagination__arrow--next:not([disabled])"
-                    )
-                
-                if not next_button:
-                    break
                     
-                # Click and wait for content
+                    if current_page:
+                        current_num = int(current_page.text)
+                        next_button = next(
+                            (btn for btn in buttons if btn.text.isdigit() and int(btn.text) == current_num + 1),
+                            None
+                        )
+                    break
+            
+            if next_button and not next_button.get_attribute('disabled'):
                 driver.execute_script("arguments[0].scrollIntoView(true);", next_button)
                 time.sleep(1)
                 driver.execute_script("arguments[0].click();", next_button)
                 time.sleep(3)
-                
-            except (NoSuchElementException, StaleElementReferenceException):
-                break
-                
-    except Exception as e:
-        st.error(f"Error loading more content: {str(e)}")
+                continue
+        except:
+            pass
         
-    return list(set(all_links))  # Remove duplicates
+        # Strategy 2: Try infinite scroll
+        last_height = driver.execute_script("return document.body.scrollHeight")
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(3)
+        
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            # Try one more scroll to be sure
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(3)
+            final_height = driver.execute_script("return document.body.scrollHeight")
+            if final_height == new_height:
+                content_loaded = False
+        
+        # Strategy 3: Look for "Load More" buttons
+        try:
+            load_more_selectors = [
+                ".load-more",
+                "#load-more",
+                "[aria-label='Load more']",
+                "button:contains('Load More')",
+                "a:contains('Load More')"
+            ]
+            
+            for selector in load_more_selectors:
+                load_more = driver.find_element(By.CSS_SELECTOR, selector)
+                if load_more and load_more.is_displayed():
+                    driver.execute_script("arguments[0].click();", load_more)
+                    time.sleep(3)
+                    content_loaded = True
+                    break
+        except:
+            pass
+            
+    return list(set(all_links))
 
 def extract_content(driver, base_url, exclude_types):
     content = []
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     
+    # Wait for main content
+    try:
+        content_selectors = [
+            ".article-content",
+            ".post-content",
+            ".entry-content", 
+            "article",
+            ".content"
+        ]
+        
+        for selector in content_selectors:
+            try:
+                WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, selector))
+                )
+                break
+            except:
+                continue
+    except:
+        pass
+
     for element in soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'a']):
         if should_exclude(element):
             continue
@@ -187,7 +267,6 @@ def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, targ
     visited = set()
     all_content = []
     
-    # First get all paginated links
     options = create_chrome_options()
     driver = webdriver.Chrome(service=Service(), options=options)
     try:
@@ -198,7 +277,6 @@ def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, targ
     finally:
         driver.quit()
     
-    # Now scrape each article in parallel
     with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_url = {}
         for url in all_links:
