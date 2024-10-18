@@ -10,9 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
 from urllib.parse import urljoin, urlparse
 import re
-import hashlib
 import time
-from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 def create_chrome_options():
@@ -35,7 +33,7 @@ def clean_text(text):
 def should_exclude(element):
     exclude_classes = ['nav', 'menu', 'footer', 'sidebar', 'advertisement', 'cookie', 'popup']
     exclude_ids = ['nav', 'menu', 'footer', 'sidebar', 'ad']
-    
+
     for parent in element.parents:
         if parent.has_attr('class'):
             if any(cls in parent.get('class', []) for cls in exclude_classes):
@@ -43,7 +41,7 @@ def should_exclude(element):
         if parent.has_attr('id'):
             if any(id in parent.get('id', '') for id in exclude_ids):
                 return True
-    
+
     return False
 
 def is_blog_post(text):
@@ -53,7 +51,7 @@ def is_blog_post(text):
 class ContentLoadingStrategy:
     def is_applicable(self, driver):
         raise NotImplementedError
-    
+
     def execute(self, driver, base_url):
         raise NotImplementedError
 
@@ -115,6 +113,8 @@ class InfiniteScrollStrategy(ContentLoadingStrategy):
 class LoadMoreButtonStrategy(ContentLoadingStrategy):
     def is_applicable(self, driver):
         load_more_selectors = [
+            ".btn-load-more",
+            ".js-btn-load-more",
             ".load-more",
             "#load-more",
             "[aria-label='Load more']",
@@ -128,25 +128,54 @@ class LoadMoreButtonStrategy(ContentLoadingStrategy):
 
     def execute(self, driver, base_url):
         load_more_selectors = [
+            ".btn-load-more",
+            ".js-btn-load-more",
             ".load-more",
             "#load-more",
             "[aria-label='Load more']",
             "button:contains('Load More')",
             "a:contains('Load More')"
         ]
-        for selector in load_more_selectors:
-            load_more = driver.find_elements(By.CSS_SELECTOR, selector)
-            if load_more:
-                for button in load_more:
-                    if button.is_displayed():
-                        driver.execute_script("arguments[0].click();", button)
-                        time.sleep(3)
-                        return gather_page_content(driver, base_url)
-        return []
+        max_clicks = 5  # Limit the number of clicks to avoid infinite loops
+        clicks = 0
+        
+        while clicks < max_clicks:
+            try:
+                # Wait for the button to be clickable
+                load_more_button = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, ', '.join(load_more_selectors)))
+                )
+                
+                # Scroll the button into view
+                driver.execute_script("arguments[0].scrollIntoView(true);", load_more_button)
+                
+                # Wait a moment for any animations to complete
+                time.sleep(1)
+                
+                # Click the button
+                load_more_button.click()
+                
+                # Wait for new content to load
+                time.sleep(3)
+                
+                clicks += 1
+                
+                # Check if there are more posts to load
+                if not self.is_applicable(driver):
+                    break
+                
+            except TimeoutException:
+                # Button not found or not clickable
+                break
+            except Exception as e:
+                print(f"Error clicking load more button: {str(e)}")
+                break
+        
+        return gather_page_content(driver, base_url)
 
 def gather_page_content(driver, base_url):
     links = []
-    
+
     # Strategy 1: Article cards
     articles = driver.find_elements(By.CSS_SELECTOR, "article.c-article, div.article, .post, .blog-post")
     for article in articles:
@@ -173,7 +202,7 @@ def gather_page_content(driver, base_url):
 def load_more_content(driver, base_url, strategies):
     all_links = []
     strategy_results = []
-    
+
     for strategy in strategies:
         if strategy.is_applicable(driver):
             try:
@@ -184,28 +213,28 @@ def load_more_content(driver, base_url, strategies):
                     break
             except Exception as e:
                 strategy_results.append(f"{strategy.__class__.__name__}: Failed - {str(e)}")
-    
+
     return list(set(all_links)), strategy_results
 
 def extract_content(driver, base_url, exclude_types):
     content = []
     soup = BeautifulSoup(driver.page_source, 'html.parser')
-    
+
     content_selectors = [
         "article", ".post-content", ".entry-content", 
         "main", "#main-content", ".main-content",
         ".content", "#content"
     ]
-    
+
     main_content = None
     for selector in content_selectors:
         main_content = soup.select_one(selector)
         if main_content:
             break
-    
+
     if not main_content:
         main_content = soup.body
-    
+
     for element in main_content.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'a', 'img']):
         if should_exclude(element):
             continue
@@ -243,21 +272,31 @@ def scrape_single_page(url, base_url, exclude_types):
 def adaptive_crawl(base_url, max_depth, max_urls, exclude_types, strategies, progress_bar):
     options = create_chrome_options()
     driver = webdriver.Chrome(service=Service(), options=options)
-    
+
     try:
         driver.get(base_url)
         time.sleep(2)
-        initial_links, strategy_results = load_more_content(driver, base_url, strategies)
+        
+        # Create an instance of the LoadMoreButtonStrategy
+        load_more_strategy = LoadMoreButtonStrategy()
+        
+        # Check if the strategy is applicable and execute it
+        if load_more_strategy.is_applicable(driver):
+            initial_links = load_more_strategy.execute(driver, base_url)
+            strategy_results = ["LoadMoreButtonStrategy: Success"]
+        else:
+            # Fall back to other strategies if load more button is not found
+            initial_links, strategy_results = load_more_content(driver, base_url, strategies)
     except Exception as e:
         st.warning(f"Dynamic content loading failed: {str(e)}. Falling back to basic scraping.")
         initial_links = [base_url]
         strategy_results = ["Fallback: Basic scraping"]
     finally:
         driver.quit()
-    
+
     for result in strategy_results:
         st.info(result)
-    
+
     to_visit = [(url, 0) for url in initial_links]
     visited = set()
     all_content = []
@@ -299,19 +338,19 @@ def main():
     url = st.text_input("Enter the website URL to scrape:")
     max_depth = st.number_input("Enter the maximum depth to scrape:", min_value=0, max_value=5, value=1, step=1)
     max_urls = st.number_input("Maximum number of URLs to scrape (leave blank for no limit):", min_value=1, value=None)
-    
+
     exclude_types = st.multiselect(
         "Select content types to exclude:",
         ['text', 'links', 'images', 'blog posts'],
         default=[]
     )
-    
+
     st.subheader("Advanced Settings")
     with st.expander("Content Loading Strategies"):
         use_pagination = st.checkbox("Use Pagination", value=True)
         use_infinite_scroll = st.checkbox("Use Infinite Scroll", value=True)
         use_load_more = st.checkbox("Use Load More Buttons", value=True)
-    
+
     if st.button("Scrape"):
         if not is_valid_url(url):
             st.error("Please enter a valid URL.")
@@ -338,6 +377,8 @@ def main():
                         if 'blog posts' in exclude_types and is_blog_post(line):
                             continue
                         f.write(line + "\n")
+                
+                
                 
                 st.success(f"Analysis completed! Content saved to {filename}")
                 
