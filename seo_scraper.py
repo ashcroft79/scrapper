@@ -73,6 +73,13 @@ def clean_text(text):
         return ""
     return re.sub(r'\s+', ' ', text).strip()
 
+def clean_url(url):
+    """Remove fragments (bookmarks) from URLs"""
+    try:
+        return url.split('#')[0] if '#' in url else url
+    except:
+        return url
+
 def should_exclude(element):
     exclude_classes = ['nav', 'menu', 'footer', 'sidebar', 'advertisement', 'cookie', 'popup', 'header']
     exclude_ids = ['nav', 'menu', 'footer', 'sidebar', 'ad', 'header']
@@ -131,6 +138,7 @@ def is_after_date(text, target_date):
     return True
 
 def is_unwanted_link(url, base_url):
+    """Enhanced URL filtering"""
     unwanted_patterns = [
         '/cookie-policy', '/privacy-policy', '/terms-and-conditions',
         '/about-us', '/contact', '/careers', '/sitemap', '/login',
@@ -139,10 +147,26 @@ def is_unwanted_link(url, base_url):
     ]
     
     try:
+        # First check if it's a bookmark of an already processed URL
+        if '#' in url:
+            base_page_url = url.split('#')[0]
+            # If we've seen this base URL, skip the bookmark
+            if base_page_url in getattr(is_unwanted_link, 'processed_base_urls', set()):
+                return True
+        
         is_external = not url.startswith(base_url)
         is_unwanted = any(pattern in url.lower() for pattern in unwanted_patterns)
-        has_fragment = '#' in url
-        return is_external or is_unwanted or has_fragment
+        
+        # Store base URL if this is a valid page
+        if not is_external and not is_unwanted:
+            if '#' in url:
+                base_page_url = url.split('#')[0]
+                if not hasattr(is_unwanted_link, 'processed_base_urls'):
+                    is_unwanted_link.processed_base_urls = set()
+                is_unwanted_link.processed_base_urls.add(base_page_url)
+            
+        return is_external or is_unwanted
+        
     except:
         return True
 
@@ -182,36 +206,16 @@ def classify_url(url):
     except:
         return 'page'
 
-def parallel_initial_discovery(url, session):
-    """Parallel processing for initial content discovery"""
-    try:
-        response = session.get(url, timeout=5)
-        if response.ok:
-            soup = BeautifulSoup(response.text, 'html.parser')
-            links = find_all_links(soup, url)
-            content_type = classify_url(url)
-            return {
-                'url': url,
-                'links': links,
-                'content_type': content_type,
-                'success': True
-            }
-    except:
-        pass
-    return {'url': url, 'links': set(), 'content_type': None, 'success': False}
-
 def find_all_links(soup, base_url):
-    """Optimized link discovery"""
+    """Find and clean all valid links on page"""
     links = set()
     
     if not soup or not base_url:
         return links
     
     if soup.find_all:  # Check if soup is valid
-        # Use a set for faster lookups
         processed_links = set()
         
-        # Process all links in one pass
         for a in soup.find_all(['a', 'link'], href=True):
             try:
                 href = a.get('href')
@@ -219,7 +223,10 @@ def find_all_links(soup, base_url):
                     processed_links.add(href)
                     full_url = urljoin(base_url, href)
                     if is_valid_url(full_url):
-                        links.add(full_url)
+                        # Clean URL before adding
+                        clean_full_url = clean_url(full_url)
+                        if clean_full_url not in links:
+                            links.add(clean_full_url)
             except:
                 continue
 
@@ -230,24 +237,26 @@ def find_embedded_content(soup, content_map, base_url):
     if not soup or not base_url:
         return
         
-    # Process all relevant tags in one pass
     for tag in soup.find_all(['img', 'a', 'iframe']):
         try:
             if tag.name == 'img' and tag.get('src'):
                 full_url = urljoin(base_url, tag['src'])
                 if is_valid_url(full_url):
-                    content_map['image'].add(full_url)
+                    clean_full_url = clean_url(full_url)
+                    content_map['image'].add(clean_full_url)
             elif tag.name == 'a' and tag.get('href'):
                 href = tag['href']
                 if any(ext in href.lower() for ext in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx']):
                     full_url = urljoin(base_url, href)
                     if is_valid_url(full_url):
-                        content_map['document'].add(full_url)
+                        clean_full_url = clean_url(full_url)
+                        content_map['document'].add(clean_full_url)
             elif tag.name == 'iframe' and tag.get('src'):
                 full_url = urljoin(base_url, tag['src'])
                 if is_valid_url(full_url):
-                    content_type = classify_url(full_url)
-                    content_map[content_type].add(full_url)
+                    clean_full_url = clean_url(full_url)
+                    content_type = classify_url(clean_full_url)
+                    content_map[content_type].add(clean_full_url)
         except:
             continue
 
@@ -273,7 +282,25 @@ def handle_cookie_consent(driver):
             return
         except:
             continue
-            
+
+def parallel_initial_discovery(url, session):
+    """Parallel processing for initial content discovery"""
+    try:
+        response = session.get(url, timeout=5)
+        if response.ok:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            links = find_all_links(soup, url)  # This now returns cleaned URLs
+            content_type = classify_url(url)
+            return {
+                'url': clean_url(url),  # Clean the URL
+                'links': links,
+                'content_type': content_type,
+                'success': True
+            }
+    except:
+        pass
+    return {'url': url, 'links': set(), 'content_type': None, 'success': False}
+
 class DriverPool:
     """Thread-safe pool of WebDriver instances"""
     def __init__(self, size=3):
@@ -307,8 +334,8 @@ def discover_site_content(driver_pool, base_url, progress_bar):
     }
     
     processed_urls = set()
-    to_process = {base_url}
-    batch_size = 10  # Increased batch size for parallel processing
+    to_process = {clean_url(base_url)}  # Start with cleaned base URL
+    batch_size = 10
     
     log_progress(progress_bar, "Starting optimized content discovery...")
     
@@ -330,17 +357,20 @@ def discover_site_content(driver_pool, base_url, progress_bar):
                 result = future.result()
                 if result['success']:
                     content_type = result['content_type']
-                    if content_type:
-                        content_map[content_type].add(result['url'])
+                    clean_result_url = clean_url(result['url'])
+                    
+                    if content_type and clean_result_url not in processed_urls:
+                        content_map[content_type].add(clean_result_url)
                     
                     # Add new URLs to process
-                    new_urls = {url for url in result['links'] 
+                    new_urls = {clean_url(url) for url in result['links'] 
                               if url.startswith(base_url) 
-                              and url not in processed_urls
+                              and clean_url(url) not in processed_urls
                               and not is_unwanted_link(url, base_url)}
+                    
                     to_process.update(new_urls)
                 
-                processed_urls.add(result['url'])
+                processed_urls.add(clean_result_url)
     
     # Dynamic content discovery with multiple drivers
     try:
@@ -359,7 +389,6 @@ def discover_site_content(driver_pool, base_url, progress_bar):
             content_hash = ""
             
             while scroll_count < 3:
-                # Smooth scroll with dynamic wait
                 driver.execute_script("""
                     window.scrollTo({
                         top: document.body.scrollHeight,
@@ -381,9 +410,11 @@ def discover_site_content(driver_pool, base_url, progress_bar):
                     new_links = find_all_links(soup, base_url)
                     
                     for link in new_links:
-                        if link.startswith(base_url) and link not in processed_urls:
-                            content_type = classify_url(link)
-                            content_map[content_type].add(link)
+                        clean_link = clean_url(link)
+                        if clean_link not in processed_urls and clean_link.startswith(base_url):
+                            content_type = classify_url(clean_link)
+                            content_map[content_type].add(clean_link)
+                            processed_urls.add(clean_link)
                 else:
                     scroll_count += 1
                 
@@ -403,11 +434,17 @@ def discover_site_content(driver_pool, base_url, progress_bar):
                     scroll_count += 1
                 else:
                     last_height = new_height
+                    scroll_count = 0
+                
         finally:
             driver_pool.return_driver(driver)
             
     except Exception as e:
         log_progress(progress_bar, f"Notice: Dynamic discovery - {str(e)}")
+    
+    # Clean content map to ensure no duplicates
+    for content_type in content_map:
+        content_map[content_type] = {clean_url(url) for url in content_map[content_type]}
     
     return content_map
 
@@ -415,22 +452,21 @@ def extract_content(driver_pool, url, content_type, base_url, exclude_types):
     """Optimized content extraction"""
     content = []
     driver = driver_pool.get_driver()
+    clean_base_url = clean_url(url)  # Use cleaned URL for checking
     
     try:
-        driver.get(url)
+        driver.get(clean_base_url)  # Use cleaned URL for navigation
         WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
         
         if content_type == 'document':
-            content.append(f"[DOCUMENT] {url}\n")
+            content.append(f"[DOCUMENT] {clean_base_url}\n")
             return content
             
         if content_type == 'image':
-            content.append(f"[IMAGE] {url}\n")
+            content.append(f"[IMAGE] {clean_base_url}\n")
             return content
         
         soup = BeautifulSoup(driver.page_source, 'html.parser')
-        
-        # Use set for deduplication
         seen_content = set()
         
         # Process schema.org data
@@ -473,7 +509,7 @@ def extract_content(driver_pool, url, content_type, base_url, exclude_types):
                         elif element.name == 'a' and 'links' not in exclude_types:
                             href = element.get('href')
                             if href:
-                                full_url = urljoin(base_url, href)
+                                full_url = clean_url(urljoin(base_url, href))  # Clean the URL
                                 if href.startswith(('http', 'https')):
                                     content.append(f"[EXTERNAL_LINK] {full_url}\n")
                                 elif href.startswith('/'):
@@ -492,7 +528,8 @@ def extract_content(driver_pool, url, content_type, base_url, exclude_types):
 def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, target_date, progress_bar):
     """Optimized main scraping function"""
     all_content = []
-    driver_pool = DriverPool(size=3)  # Create pool of 3 drivers
+    driver_pool = DriverPool(size=3)
+    processed_base_urls = set()  # Track base URLs without fragments
     
     try:
         # Discover content
@@ -506,7 +543,10 @@ def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, targ
         urls_to_process = []
         for content_type, urls in content_map.items():
             for url in urls:
-                urls_to_process.append((url, content_type))
+                clean_base_url = clean_url(url)
+                if clean_base_url not in processed_base_urls:
+                    processed_base_urls.add(clean_base_url)
+                    urls_to_process.append((clean_base_url, content_type))
         
         if max_urls:
             urls_to_process = urls_to_process[:max_urls]
@@ -542,7 +582,8 @@ def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, targ
                             url = urls_to_process[processed_count - 1][0]
                             all_content.extend([f"\n[URL] {url}\n"])
                             all_content.extend(content)
-                            st.session_state.scraped_urls.append(url)
+                            if url not in st.session_state.scraped_urls:
+                                st.session_state.scraped_urls.append(url)
                     except Exception as e:
                         log_progress(progress_bar, f"Notice: {str(e)}")
                         continue
