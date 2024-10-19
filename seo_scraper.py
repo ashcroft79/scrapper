@@ -258,35 +258,37 @@ def classify_url(url):
         return 'page'
 
 def find_all_links(soup, base_url):
-    """Find and clean all valid links on page"""
+    """Enhanced link finding for specific site structure"""
     links = set()
     
-    if not soup or not base_url:
-        return links
-    
-    # Find all article cards
-    article_cards = soup.find_all('a', class_='blog-card')
-    for card in article_cards:
-        href = card.get('href')
-        if href:
-            full_url = urljoin(base_url, href)
-            if is_valid_url(full_url):
-                clean_full_url = clean_url(full_url)
-                if clean_full_url not in links:
-                    links.add(clean_full_url)
+    # Find article links specifically from blog cards
+    blog_cards = soup.find_all(class_='blog-card')
+    if blog_cards:
+        for card in blog_cards:
+            if isinstance(card, Tag) and card.name == 'a' and card.has_attr('href'):
+                href = card['href']
+                full_url = urljoin(base_url, href)
+                if is_valid_url(full_url):
+                    links.add(clean_url(full_url))
 
-    # Standard link discovery as backup
-    for a in soup.find_all('a', href=True):
-        try:
-            href = a.get('href')
-            if href and not href.startswith('#'):
+    # Find pagination links
+    pagination = soup.find_all(class_='pagination')
+    if pagination:
+        for page_link in pagination:
+            if isinstance(page_link, Tag) and page_link.name == 'a' and page_link.has_attr('href'):
+                href = page_link['href']
+                full_url = urljoin(base_url, href)
+                if is_valid_url(full_url):
+                    links.add(clean_url(full_url))
+
+    # Backup: standard link discovery
+    if not links:
+        for a in soup.find_all('a', href=True):
+            href = a['href']
+            if href and href.strip() != '#':
                 full_url = urljoin(base_url, href)
                 if is_valid_url(full_url) and full_url.startswith(base_url):
-                    clean_full_url = clean_url(full_url)
-                    if clean_full_url not in links:
-                        links.add(clean_full_url)
-        except:
-            continue
+                    links.add(clean_url(full_url))
 
     return links
 
@@ -373,7 +375,7 @@ class DriverPool:
                 pass
 
 def discover_site_content(driver_pool, base_url, progress, dynamic_limit=None):
-    """Optimized hybrid approach to content discovery with dynamic control"""
+    """Modified discovery with better error handling and logging"""
     content_map = {
         'page': set(),
         'article': set(),
@@ -387,6 +389,23 @@ def discover_site_content(driver_pool, base_url, progress, dynamic_limit=None):
     
     progress.update_phase("Initial Discovery", "Starting static content discovery")
     session = create_session()
+    
+    try:
+        response = session.get(base_url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        initial_links = find_all_links(soup, base_url)
+        progress.log(f"Found {len(initial_links)} initial links")
+        
+        for link in initial_links:
+            if link.startswith(base_url) and not is_unwanted_link(link, base_url):
+                content_type = classify_url(link)
+                content_map[content_type].add(link)
+                progress.increment_stat('pages_discovered')
+                progress.update_stats('links_found', len(initial_links))
+                processed_urls.add(link)
+                
+    except Exception as e:
+        progress.log(f"Error in initial discovery: {str(e)}")
     
     # Initial static discovery
     with ThreadPoolExecutor(max_workers=10) as executor:
