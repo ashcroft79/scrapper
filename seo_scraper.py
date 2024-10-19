@@ -146,73 +146,157 @@ def classify_url(url):
     except:
         return 'page'
 
+def get_pagination_urls(base_url, current_page_url):
+    """Generate pagination URLs based on patterns"""
+    pagination_urls = set()
+    
+    try:
+        # Extract current page number
+        page_match = re.search(r'/page/(\d+)', current_page_url)
+        if page_match:
+            current_page = int(page_match.group(1))
+            # Add next few pages
+            for page in range(current_page + 1, current_page + 4):
+                next_url = re.sub(r'/page/\d+', f'/page/{page}', current_page_url)
+                pagination_urls.add(next_url)
+        else:
+            # Check if URL ends with trailing slash
+            if current_page_url.endswith('/'):
+                pagination_urls.add(f"{current_page_url}page/2/")
+            else:
+                pagination_urls.add(f"{current_page_url}/page/2/")
+    except Exception:
+        pass
+        
+    return pagination_urls
+
 def find_all_links(soup, base_url):
     """Find all valid links on page"""
     links = set()
     
-    try:
+    if not soup or not base_url:
+        return links
+    
+    # Standard links
+    if soup.find_all:  # Check if soup is valid
         # Standard links
         for a in soup.find_all('a', href=True):
-            href = a.get('href')
-            if href:
-                full_url = urljoin(base_url, href)
-                if is_valid_url(full_url):
-                    links.add(full_url)
-        
+            try:
+                href = a.get('href')
+                if href:
+                    full_url = urljoin(base_url, href)
+                    if is_valid_url(full_url):
+                        links.add(full_url)
+            except Exception:
+                continue
+
         # Look for links in onclick events
-        onclick_elements = soup.find_all(attrs={"onclick": True})
-        for element in onclick_elements:
-            onclick = element.get('onclick')
-            urls = re.findall(r'(?:href=|window\.location=|redirect\()[\'"](.*?)[\'"]', onclick)
-            for url in urls:
-                full_url = urljoin(base_url, url)
-                if is_valid_url(full_url):
-                    links.add(full_url)
-        
+        try:
+            onclick_elements = soup.find_all(lambda tag: tag.get('onclick', ''))
+            for element in onclick_elements:
+                try:
+                    onclick = element.get('onclick', '')
+                    if onclick:
+                        urls = re.findall(r'(?:href=|window\.location=|redirect\()[\'"](.*?)[\'"]', onclick)
+                        for url in urls:
+                            full_url = urljoin(base_url, url)
+                            if is_valid_url(full_url):
+                                links.add(full_url)
+                except Exception:
+                    continue
+        except Exception:
+            pass
+
         # Look for links in data attributes
-        data_elements = soup.find_all(attrs=lambda x: any(k.startswith('data-') for k in x.keys() if x and k))
-        for element in data_elements:
-            for attr in element.attrs:
-                if attr.startswith('data-'):
-                    value = element[attr]
-                    if isinstance(value, str) and (value.startswith('http') or value.startswith('/')):
-                        full_url = urljoin(base_url, value)
-                        if is_valid_url(full_url):
-                            links.add(full_url)
-    except Exception as e:
-        st.error(f"Error finding links: {str(e)}")
-    
+        try:
+            data_elements = soup.find_all(lambda tag: any(attr.startswith('data-') for attr in tag.attrs if attr))
+            for element in data_elements:
+                try:
+                    for attr, value in element.attrs.items():
+                        if attr.startswith('data-') and isinstance(value, str):
+                            if value.startswith('http') or value.startswith('/'):
+                                full_url = urljoin(base_url, value)
+                                if is_valid_url(full_url):
+                                    links.add(full_url)
+                except Exception:
+                    continue
+        except Exception:
+            pass
+
+        # Additional link patterns
+        try:
+            # Look for pagination links
+            pagination_elements = soup.find_all(class_=lambda x: x and ('pagination' in x or 'paging' in x))
+            for element in pagination_elements:
+                try:
+                    for a in element.find_all('a', href=True):
+                        href = a.get('href')
+                        if href:
+                            full_url = urljoin(base_url, href)
+                            if is_valid_url(full_url):
+                                links.add(full_url)
+                except Exception:
+                    continue
+                    
+            # Look for blog post links
+            article_elements = soup.find_all(['article', 'div'], class_=lambda x: x and ('post' in x or 'article' in x))
+            for element in article_elements:
+                try:
+                    for a in element.find_all('a', href=True):
+                        href = a.get('href')
+                        if href:
+                            full_url = urljoin(base_url, href)
+                            if is_valid_url(full_url):
+                                links.add(full_url)
+                except Exception:
+                    continue
+        except Exception:
+            pass
+
     return links
 
 def find_embedded_content(soup, content_map, base_url):
     """Find embedded content like images and documents"""
     try:
+        if not soup or not base_url:
+            return
+            
         # Images
         for img in soup.find_all('img', src=True):
-            src = img.get('src')
-            if src:
-                full_url = urljoin(base_url, src)
-                if is_valid_url(full_url):
-                    content_map['image'].add(full_url)
+            try:
+                src = img.get('src')
+                if src:
+                    full_url = urljoin(base_url, src)
+                    if is_valid_url(full_url):
+                        content_map['image'].add(full_url)
+            except Exception:
+                continue
         
         # Document links
         for a in soup.find_all('a', href=True):
-            href = a.get('href')
-            if href:
-                full_url = urljoin(base_url, href)
-                if any(ext in full_url.lower() for ext in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx']):
-                    content_map['document'].add(full_url)
+            try:
+                href = a.get('href')
+                if href:
+                    full_url = urljoin(base_url, href)
+                    if any(ext in full_url.lower() for ext in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx']):
+                        content_map['document'].add(full_url)
+            except Exception:
+                continue
                     
         # Look for embedded content in iframes
         for iframe in soup.find_all('iframe', src=True):
-            src = iframe.get('src')
-            if src:
-                full_url = urljoin(base_url, src)
-                if is_valid_url(full_url):
-                    content_type = classify_url(full_url)
-                    content_map[content_type].add(full_url)
-    except Exception as e:
-        st.error(f"Error finding embedded content: {str(e)}")
+            try:
+                src = iframe.get('src')
+                if src:
+                    full_url = urljoin(base_url, src)
+                    if is_valid_url(full_url):
+                        content_type = classify_url(full_url)
+                        content_map[content_type].add(full_url)
+            except Exception:
+                continue
+                
+    except Exception:
+        pass
 
 def handle_cookie_consent(driver):
     """Handle cookie consent popups"""
@@ -222,7 +306,10 @@ def handle_cookie_consent(driver):
         '[aria-label="Accept cookies"]',
         '#onetrust-accept-btn-handler',
         '.consent-accept', '.accept-all',
-        '[data-testid="cookie-accept"]'
+        '[data-testid="cookie-accept"]',
+        'button[contains(text(), "Accept")]',
+        'button[contains(text(), "I accept")]',
+        'button[contains(text(), "Allow")]'
     ]
     
     for selector in common_selectors:
@@ -235,7 +322,7 @@ def handle_cookie_consent(driver):
             return
         except:
             continue
-
+            
 def discover_site_content(driver, base_url, progress_bar):
     """Hybrid approach to content discovery"""
     content_map = {
@@ -246,12 +333,12 @@ def discover_site_content(driver, base_url, progress_bar):
         'api_endpoints': set()
     }
     
-    visited = set()
-    to_visit = {base_url}
+    processed_urls = set()
+    to_process = {base_url}
     
     log_progress(progress_bar, "Starting hybrid content discovery...")
     
-    # First try basic request-based crawling
+    # Initial basic crawl
     try:
         log_progress(progress_bar, "Attempting basic crawl...")
         headers = {
@@ -261,20 +348,34 @@ def discover_site_content(driver, base_url, progress_bar):
         if response.ok:
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Find all links
+            # Find initial links
             initial_links = find_all_links(soup, base_url)
             for link in initial_links:
                 if link.startswith(base_url):
                     content_type = classify_url(link)
                     content_map[content_type].add(link)
                     if content_type in ['page', 'article']:
-                        to_visit.add(link)
+                        to_process.add(link)
             
-            # Find images and documents
+            # Find embedded content
             find_embedded_content(soup, content_map, base_url)
             log_progress(progress_bar, f"Basic crawl found {sum(len(v) for v in content_map.values())} items")
+            
+            # Try sitemap
+            try:
+                sitemap_url = urljoin(base_url, '/sitemap.xml')
+                sitemap_response = requests.get(sitemap_url, timeout=5)
+                if sitemap_response.ok:
+                    sitemap_soup = BeautifulSoup(sitemap_response.text, 'xml')
+                    for url in sitemap_soup.find_all('loc'):
+                        if url.text.startswith(base_url):
+                            content_type = classify_url(url.text)
+                            content_map[content_type].add(url.text)
+            except:
+                pass
+                
     except Exception as e:
-        log_progress(progress_bar, f"Basic crawl encountered: {str(e)}")
+        log_progress(progress_bar, f"Notice: Basic crawl - {str(e)}")
     
     # Use Selenium for dynamic content
     try:
@@ -282,19 +383,20 @@ def discover_site_content(driver, base_url, progress_bar):
         driver.get(base_url)
         time.sleep(3)
         
-        # Handle cookie consent if present
+        # Handle cookie consent
         handle_cookie_consent(driver)
         
-        # Scroll and check for dynamic loading
-        last_height = driver.execute_script("return document.body.scrollHeight")
+        # Process initial dynamic content
+        current_page_content = content_map.copy()
         scroll_count = 0
+        last_height = driver.execute_script("return document.body.scrollHeight")
         
-        while scroll_count < 5:  # Try up to 5 scroll attempts
-            # Scroll down
+        while scroll_count < 5:  # Maximum scroll attempts
+            # Scroll and wait
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(2)
             
-            # Try clicking any load more buttons
+            # Click any load more buttons
             load_more_selectors = [
                 ".load-more", "#load-more", "[class*='load-more']",
                 "button:contains('Load More')", "a:contains('Load More')",
@@ -312,7 +414,22 @@ def discover_site_content(driver, base_url, progress_bar):
                 except:
                     continue
             
-            # Check if page grew
+            # Get new content
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+            new_links = find_all_links(soup, base_url)
+            
+            # Process new links
+            for link in new_links:
+                if link.startswith(base_url):
+                    content_type = classify_url(link)
+                    content_map[content_type].add(link)
+                    if content_type in ['page', 'article']:
+                        to_process.add(link)
+            
+            # Update embedded content
+            find_embedded_content(soup, content_map, base_url)
+            
+            # Check scroll progress
             new_height = driver.execute_script("return document.body.scrollHeight")
             if new_height == last_height:
                 scroll_count += 1
@@ -320,39 +437,25 @@ def discover_site_content(driver, base_url, progress_bar):
                 scroll_count = 0
                 last_height = new_height
             
-            # Extract content after each scroll/click
-            soup = BeautifulSoup(driver.page_source, 'html.parser')
+            # Check for new content
+            total_current = sum(len(v) for v in current_page_content.values())
+            total_new = sum(len(v) for v in content_map.values())
             
-            # Find new links
-            new_links = find_all_links(soup, base_url)
-            for link in new_links:
-                if link.startswith(base_url) and link not in visited:
-                    content_type = classify_url(link)
-                    content_map[content_type].add(link)
-                    if content_type in ['page', 'article']:
-                        to_visit.add(link)
-            
-            # Update embedded content
-            find_embedded_content(soup, content_map, base_url)
-            
-            log_progress(progress_bar, f"Found {sum(len(v) for v in content_map.values())} items after scroll {5 - scroll_count}")
+            if total_new > total_current:
+                current_page_content = content_map.copy()
+                log_progress(progress_bar, f"Found {total_new} items after scroll {5 - scroll_count}")
             
     except Exception as e:
-        log_progress(progress_bar, f"Dynamic discovery encountered: {str(e)}")
+        log_progress(progress_bar, f"Notice: Dynamic discovery - {str(e)}")
     
-    # Try sitemap as final step
-    try:
-        sitemap_url = urljoin(base_url, '/sitemap.xml')
-        response = requests.get(sitemap_url, timeout=5)
-        if response.ok:
-            soup = BeautifulSoup(response.text, 'xml')
-            for url in soup.find_all('loc'):
-                if url.text.startswith(base_url):
-                    content_type = classify_url(url.text)
-                    content_map[content_type].add(url.text)
-    except:
-        pass
-
+    # Process pagination if found
+    for url in list(to_process):  # Convert to list to avoid modification during iteration
+        if url not in processed_urls:
+            pagination_urls = get_pagination_urls(base_url, url)
+            for pagination_url in pagination_urls:
+                content_type = classify_url(pagination_url)
+                content_map[content_type].add(pagination_url)
+    
     # Clean and deduplicate results
     for content_type in content_map:
         content_map[content_type] = list(set(url for url in content_map[content_type] 
@@ -389,22 +492,25 @@ def extract_content(driver, url, content_type, base_url, exclude_types):
                 data = json.loads(element.string)
                 if isinstance(data, dict):
                     if 'articleBody' in data:
-                        content.append(f"[ARTICLE_BODY] {data['articleBody']}\n")
+                        content.append(f"[ARTICLE_BODY] {clean_text(data['articleBody'])}\n")
                     if 'description' in data:
-                        content.append(f"[DESCRIPTION] {data['description']}\n")
+                        content.append(f"[DESCRIPTION] {clean_text(data['description'])}\n")
             except:
                 continue
         
         # Main content extraction
         main_content_selectors = [
             'article', 'main', '.content', '.post-content',
-            '[role="main"]', '.entry-content', '.article-content'
+            '[role="main"]', '.entry-content', '.article-content',
+            '.post-body', '.blog-post', '.article-body'
         ]
         
+        content_found = False
         for selector in main_content_selectors:
             try:
                 main_content = soup.select_one(selector)
                 if main_content:
+                    content_found = True
                     for element in main_content.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'a']):
                         if should_exclude(element):
                             continue
@@ -421,12 +527,13 @@ def extract_content(driver, url, content_type, base_url, exclude_types):
                                     content.append(f"[EXTERNAL_LINK] {href}\n")
                                 elif href.startswith('/'):
                                     content.append(f"[INTERNAL_LINK] {urljoin(base_url, href)}\n")
-                    break  # Stop after finding first valid main content area
+                    if content:
+                        break
             except:
                 continue
-                
-        # If no main content found, try general content
-        if not content:
+        
+        # If no content found in main content areas, try general content
+        if not content_found:
             for element in soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'a']):
                 if should_exclude(element):
                     continue
@@ -447,7 +554,7 @@ def extract_content(driver, url, content_type, base_url, exclude_types):
         return content
         
     except Exception as e:
-        content.append(f"[ERROR] Failed to extract content: {str(e)}\n")
+        log_progress(progress_bar, f"Notice: Content extraction - {str(e)}")
         return content
 
 def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, target_date, progress_bar):
@@ -489,11 +596,11 @@ def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, targ
                     all_content.extend(content)
                     st.session_state.scraped_urls.append(url)
             except Exception as e:
-                log_progress(progress_bar, f"Error processing {url}: {str(e)}")
+                log_progress(progress_bar, f"Notice: URL processing - {str(e)}")
                 continue
                 
     except Exception as e:
-        log_progress(progress_bar, f"Error during scraping: {str(e)}")
+        log_progress(progress_bar, f"Notice: Scraping process - {str(e)}")
         return []
         
     finally:
@@ -566,4 +673,4 @@ def main():
             st.error(f"Error during scraping: {str(e)}")
 
 if __name__ == "__main__":
-    main()
+    main()            
