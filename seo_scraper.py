@@ -326,11 +326,10 @@ def discover_site_content(driver_pool, base_url, progress, dynamic_limit=None):
     }
     
     processed_urls = set()
-    to_process = {clean_url(base_url)}
-    
     progress.update_phase("Initial Discovery", "Starting static content discovery")
     session = create_session()
     
+    # Initial static discovery
     try:
         response = session.get(base_url)
         if response.ok:
@@ -338,14 +337,18 @@ def discover_site_content(driver_pool, base_url, progress, dynamic_limit=None):
             initial_links = find_all_links(soup, base_url)
             progress.log(f"Found {len(initial_links)} initial links")
             
+            # Process found links
             for link in initial_links:
                 if link.startswith(base_url) and not is_unwanted_link(link, base_url):
                     content_type = classify_url(link)
-                    content_map[content_type].add(link)
-                    progress.increment_stat('pages_discovered')
-                    progress.update_stats('links_found', len(initial_links))
-                    processed_urls.add(link)
-                    
+                    clean_link = clean_url(link)
+                    if clean_link not in processed_urls:
+                        content_map[content_type].add(clean_link)
+                        processed_urls.add(clean_link)
+                        progress.increment_stat('pages_discovered')
+            
+            progress.update_stats('links_found', len(initial_links))
+            
     except Exception as e:
         progress.log(f"Error in initial discovery: {str(e)}")
 
