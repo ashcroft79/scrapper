@@ -264,40 +264,58 @@ def find_all_links(soup, base_url):
     if not soup or not base_url:
         return links
     
-    if soup.find_all:
-        processed_links = set()
-        
-        for a in soup.find_all(['a', 'link'], href=True):
-            try:
-                href = a.get('href')
-                if href and href not in processed_links:
-                    processed_links.add(href)
-                    full_url = urljoin(base_url, href)
-                    if is_valid_url(full_url):
-                        clean_full_url = clean_url(full_url)
-                        if clean_full_url not in links:
-                            links.add(clean_full_url)
-            except:
-                continue
+    # Find all article cards
+    article_cards = soup.find_all('a', class_='blog-card')
+    for card in article_cards:
+        href = card.get('href')
+        if href:
+            full_url = urljoin(base_url, href)
+            if is_valid_url(full_url):
+                clean_full_url = clean_url(full_url)
+                if clean_full_url not in links:
+                    links.add(clean_full_url)
+
+    # Standard link discovery as backup
+    for a in soup.find_all('a', href=True):
+        try:
+            href = a.get('href')
+            if href and not href.startswith('#'):
+                full_url = urljoin(base_url, href)
+                if is_valid_url(full_url) and full_url.startswith(base_url):
+                    clean_full_url = clean_url(full_url)
+                    if clean_full_url not in links:
+                        links.add(clean_full_url)
+        except:
+            continue
 
     return links
 
 def parallel_initial_discovery(url, session):
     """Parallel processing for initial content discovery"""
     try:
-        response = session.get(url, timeout=5)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+        }
+        response = session.get(url, timeout=5, headers=headers)
         if response.ok:
             soup = BeautifulSoup(response.text, 'html.parser')
-            links = find_all_links(soup, url)  # This now returns cleaned URLs
+            links = find_all_links(soup, url)
             content_type = classify_url(url)
+            
+            # Log number of links found for debugging
+            num_links = len(links)
+            if num_links > 0:
+                print(f"Found {num_links} links on {url}")
+            
             return {
-                'url': clean_url(url),  # Clean the URL
+                'url': clean_url(url),
                 'links': links,
                 'content_type': content_type,
                 'success': True
             }
-    except:
-        pass
+    except Exception as e:
+        print(f"Error in parallel_initial_discovery: {str(e)}")
     return {'url': url, 'links': set(), 'content_type': None, 'success': False}
 
 def handle_cookie_consent(driver):
