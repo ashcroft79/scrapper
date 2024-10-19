@@ -1,151 +1,195 @@
-import streamlit as st
-import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+import json
 import re
-from collections import defaultdict
+from urllib.parse import urljoin, urlparse
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-import pickle
-import os
 
-class UniversalWebScraper:
-    def __init__(self, base_url, max_depth=3, exclusions=None, include_params=False):
-        self.base_url = base_url
-        self.max_depth = max_depth
-        self.exclusions = exclusions or []
-        self.include_params = include_params
-        self.site_map = defaultdict(list)
-        self.visited = set()
+def setup_network_monitoring(driver):
+    """Enable network monitoring in Chrome"""
+    driver.execute_cdp_cmd('Network.enable', {})
+    requests = []
+    
+    def capture_request(request):
+        requests.append(request)
+    
+    driver.execute_cdp_cmd('Network.setRequestInterception', {'patterns': [{'urlPattern': '*'}]})
+    driver.on('Network.requestIntercepted', capture_request)
+    
+    return requests
 
-    def is_valid_url(self, url):
+def analyze_network_requests(requests, base_url):
+    """Analyze network requests to find content endpoints"""
+    content_endpoints = []
+    
+    # Common patterns in content API endpoints
+    api_patterns = [
+        r'/api/content',
+        r'/api/articles',
+        r'/api/posts',
+        r'/wp-json/wp/v2',
+        r'/load-more',
+        r'page=\d+',
+        r'offset=\d+',
+        r'limit=\d+'
+    ]
+    
+    for request in requests:
+        url = request.get('url', '')
+        if any(re.search(pattern, url) for pattern in api_patterns):
+            content_endpoints.append(url)
+            
+    return content_endpoints
+
+def find_pagination_info(driver):
+    """Find pagination information using various methods"""
+    pagination_info = {
+        'next_links': [],
+        'total_pages': None,
+        'current_page': None
+    }
+    
+    # Method 1: Check rel="next" links
+    try:
+        next_links = driver.find_elements(By.CSS_SELECTOR, 'link[rel="next"]')
+        pagination_info['next_links'].extend([link.get_attribute('href') for link in next_links])
+    except:
+        pass
+        
+    # Method 2: Check sitemap for pagination patterns
+    try:
+        sitemap_url = urljoin(driver.current_url, '/sitemap.xml')
+        response = requests.get(sitemap_url)
+        if response.ok:
+            soup = BeautifulSoup(response.text, 'xml')
+            urls = soup.find_all('url')
+            page_pattern = re.compile(r'page/\d+|page=\d+')
+            pagination_info['next_links'].extend([
+                url.loc.text for url in urls 
+                if page_pattern.search(url.loc.text)
+            ])
+    except:
+        pass
+    
+    # Method 3: Look for page numbers in DOM
+    try:
+        pagination_elements = driver.find_elements(By.CSS_SELECTOR, '.pagination, .nav-links, .pager')
+        for element in pagination_elements:
+            numbers = re.findall(r'\d+', element.text)
+            if numbers:
+                pagination_info['total_pages'] = max(map(int, numbers))
+                current = element.find_element(By.CSS_SELECTOR, '.current, .active')
+                if current:
+                    pagination_info['current_page'] = int(current.text)
+    except:
+        pass
+        
+    return pagination_info
+
+def extract_dynamic_content(driver):
+    """Extract content that may be loaded dynamically"""
+    content = []
+    
+    # Monitor network requests
+    requests = setup_network_monitoring(driver)
+    
+    # Initial scroll to trigger content loading
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+    
+    # Analyze network requests
+    content_endpoints = analyze_network_requests(requests, driver.current_url)
+    
+    # Directly fetch content from APIs if found
+    for endpoint in content_endpoints:
         try:
-            result = urlparse(url)
-            return all([result.scheme, result.netloc])
-        except ValueError:
-            return False
-
-    def normalize_url(self, url):
-        if not self.include_params:
-            url = url.split('?')[0]
-        return url.rstrip('/')
-
-    def should_exclude(self, url):
-        return any(exclusion in url for exclusion in self.exclusions)
-
-    def get_links(self, url):
-        try:
-            response = requests.get(url, timeout=10)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            return [urljoin(url, link.get('href')) for link in soup.find_all('a', href=True)]
-        except Exception as e:
-            st.error(f"Error fetching links from {url}: {str(e)}")
-            return []
-
-    def create_site_map(self):
-        to_visit = [(self.base_url, 0)]
-        while to_visit:
-            url, depth = to_visit.pop(0)
-            if depth > self.max_depth:
+            response = requests.get(endpoint)
+            if response.ok:
+                data = response.json()
+                # Extract content from API response
+                content.extend(parse_api_response(data))
+        except:
+            continue
+    
+    # Find pagination information
+    pagination = find_pagination_info(driver)
+    
+    # Handle regular pagination if available
+    if pagination['next_links']:
+        for link in pagination['next_links']:
+            try:
+                driver.get(link)
+                content.extend(extract_content(driver))
+            except:
                 continue
-            normalized_url = self.normalize_url(url)
-            if normalized_url not in self.visited and self.is_valid_url(normalized_url) and not self.should_exclude(normalized_url):
-                self.visited.add(normalized_url)
-                self.site_map[depth].append(normalized_url)
-                links = self.get_links(normalized_url)
-                to_visit.extend((link, depth + 1) for link in links if link.startswith(self.base_url))
-            time.sleep(0.1)  # Be polite to the server
-
-    def extract_content(self, url):
-        try:
-            response = requests.get(url, timeout=10)
-            soup = BeautifulSoup(response.text, 'html.parser')
+                
+    # If no pagination found, try infinite scroll simulation
+    elif not content_endpoints:
+        last_height = driver.execute_script("return document.body.scrollHeight")
+        while True:
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(2)
+            new_height = driver.execute_script("return document.body.scrollHeight")
+            if new_height == last_height:
+                break
+            last_height = new_height
             
-            # Remove unwanted elements
-            for unwanted in soup(['script', 'style', 'nav', 'footer']):
-                unwanted.decompose()
-            
-            # Extract text content
-            text_content = soup.get_text(separator='\n', strip=True)
-            
-            # Clean up the text
-            text_content = re.sub(r'\n+', '\n', text_content)
-            text_content = re.sub(r'\s+', ' ', text_content)
-            
-            return text_content.strip()
-        except Exception as e:
-            st.error(f"Error extracting content from {url}: {str(e)}")
-            return ""
+    return content
 
-    def scrape_selected_urls(self, selected_urls):
-        results = {}
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            future_to_url = {executor.submit(self.extract_content, url): url for url in selected_urls}
-            for future in as_completed(future_to_url):
-                url = future_to_url[future]
-                try:
-                    content = future.result()
-                    results[url] = content
-                except Exception as e:
-                    st.error(f"Error scraping {url}: {str(e)}")
-        return results
-
-@st.cache_data
-def create_site_map(base_url, max_depth, exclusions, include_params):
-    scraper = UniversalWebScraper(base_url, max_depth, exclusions, include_params)
-    scraper.create_site_map()
-    return scraper.site_map
-
-def main():
-    st.title("Universal Web Scraper")
-
-    # Use session state to store the site map
-    if 'site_map' not in st.session_state:
-        st.session_state.site_map = None
-
-    base_url = st.text_input("Enter the base URL to scrape:")
-    max_depth = st.number_input("Maximum depth to crawl:", min_value=1, max_value=5, value=3)
-    include_params = st.checkbox("Include URL parameters in site map")
+def parse_api_response(data):
+    """Parse content from API responses"""
+    content = []
     
-    exclusions = st.text_area("Enter URL patterns to exclude (one per line):").split('\n')
-    exclusions = [e.strip() for e in exclusions if e.strip()]
+    # Common patterns in API responses
+    if isinstance(data, list):
+        for item in data:
+            content.extend(extract_from_item(item))
+    elif isinstance(data, dict):
+        if 'data' in data:
+            content.extend(parse_api_response(data['data']))
+        else:
+            content.extend(extract_from_item(data))
+            
+    return content
+
+def extract_from_item(item):
+    """Extract content from individual API response items"""
+    content = []
     
-    if st.button("Create Site Map"):
-        if not base_url:
-            st.error("Please enter a base URL.")
-            return
+    # Common field names for content
+    content_fields = ['title', 'content', 'excerpt', 'description', 'text']
+    link_fields = ['url', 'link', 'permalink']
+    
+    for field in content_fields:
+        if field in item and isinstance(item[field], str):
+            content.append(f"[{field.upper()}] {item[field]}")
+            
+    for field in link_fields:
+        if field in item and isinstance(item[field], str):
+            content.append(f"[LINK] {item[field]}")
+            
+    return content
 
-        with st.spinner("Creating site map..."):
-            st.session_state.site_map = create_site_map(base_url, max_depth, exclusions, include_params)
-
-        st.success("Site map created!")
-
-    if st.session_state.site_map:
-        st.subheader("Site Map")
-        for depth, urls in st.session_state.site_map.items():
-            with st.expander(f"Depth {depth} ({len(urls)} URLs)"):
-                selected_urls = st.multiselect(f"Select URLs to scrape at depth {depth}:", urls, key=f"depth_{depth}")
-                if selected_urls:
-                    if st.button(f"Scrape selected URLs at depth {depth}", key=f"scrape_{depth}"):
-                        scraper = UniversalWebScraper(base_url, max_depth, exclusions, include_params)
-                        with st.spinner("Scraping selected URLs..."):
-                            results = scraper.scrape_selected_urls(selected_urls)
-                        
-                        for url, content in results.items():
-                            st.subheader(f"Content from {url}")
-                            st.text_area("", content, height=200, key=f"content_{url}")
-                            
-                            # Save content to a file
-                            filename = f"{urlparse(url).netloc}_{urlparse(url).path.replace('/', '_')}.txt"
-                            with open(filename, "w", encoding="utf-8") as f:
-                                f.write(content)
-                            st.download_button(
-                                label=f"Download content for {url}",
-                                data=content,
-                                file_name=filename,
-                                mime="text/plain",
-                                key=f"download_{url}"
-                            )
-
-if __name__ == "__main__":
-    main()
+# Add these functions to your existing scraper
+def load_more_content(driver, base_url):
+    """Enhanced content loading with search engine techniques"""
+    all_links = []
+    
+    # First try API/network monitoring approach
+    content = extract_dynamic_content(driver)
+    
+    # Extract links from dynamically loaded content
+    for item in content:
+        if item.startswith('[LINK]'):
+            link = item.split('[LINK]')[1].strip()
+            if link.startswith(base_url):
+                all_links.append(link)
+    
+    # If no links found, fall back to existing methods
+    if not all_links:
+        all_links = gather_page_content(driver, base_url)
+        
+    return list(set(all_links))
