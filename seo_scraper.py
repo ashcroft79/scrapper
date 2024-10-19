@@ -300,6 +300,38 @@ def parallel_initial_discovery(url, session):
         pass
     return {'url': url, 'links': set(), 'content_type': None, 'success': False}
 
+def handle_cookie_consent(driver):
+    """Handle common cookie consent popups"""
+    consent_selectors = [
+        '#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll',
+        '.cookie-accept', 
+        '#accept-cookies',
+        '[aria-label="Accept cookies"]',
+        '#onetrust-accept-btn-handler',
+        '.consent-accept', 
+        '.accept-all',
+        '[data-testid="cookie-accept"]',
+        'button[contains(text(), "Accept")]',
+        'button[contains(text(), "I accept")]',
+        'button[contains(text(), "Allow")]',
+        '.cc-accept',
+        '.cc-allow',
+        '#gdpr-accept',
+        '.privacy-accept',
+        '#cookie-notice-accept-button',
+        '.cookie-consent-accept'
+    ]
+    
+    for selector in consent_selectors:
+        try:
+            button = WebDriverWait(driver, 1).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
+            )
+            driver.execute_script("arguments[0].click();", button)
+            return
+        except:
+            continue
+
 class DriverPool:
     """Thread-safe pool of WebDriver instances"""
     def __init__(self, size=3):
