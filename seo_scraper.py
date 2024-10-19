@@ -226,7 +226,7 @@ def classify_url(url):
         return 'page'
 
 def find_all_links(soup, base_url):
-    """Enhanced link finding for specific site structure"""
+    """Enhanced link finding with debug logging"""
     links = set()
     
     if not soup or not base_url:
@@ -234,32 +234,50 @@ def find_all_links(soup, base_url):
 
     # Find article links specifically from blog cards
     blog_cards = soup.find_all(class_='blog-card')
-    if blog_cards:
-        for card in blog_cards:
-            if isinstance(card, Tag) and card.name == 'a' and card.has_attr('href'):
-                href = card['href']
+    print(f"Found {len(blog_cards)} blog cards")  # Debug
+    
+    for card in blog_cards:
+        try:
+            href = card.get('href')
+            if href:
                 full_url = urljoin(base_url, href)
                 if is_valid_url(full_url):
                     links.add(clean_url(full_url))
+        except Exception as e:
+            print(f"Error processing blog card: {str(e)}")  # Debug
 
-    # Find pagination links
-    pagination = soup.find_all(class_='pagination')
-    if pagination:
-        for page_link in pagination:
-            if isinstance(page_link, Tag) and page_link.name == 'a' and page_link.has_attr('href'):
-                href = page_link['href']
+    # Try finding article links directly
+    article_links = soup.find_all('a', class_='card-title')
+    print(f"Found {len(article_links)} card titles")  # Debug
+    
+    for link in article_links:
+        try:
+            href = link.get('href')
+            if href:
                 full_url = urljoin(base_url, href)
                 if is_valid_url(full_url):
                     links.add(clean_url(full_url))
+        except Exception as e:
+            print(f"Error processing card title: {str(e)}")  # Debug
 
-    # Backup: standard link discovery
-    if not links:
-        for a in soup.find_all('a', href=True):
-            href = a['href']
-            if href and href.strip() != '#':
-                full_url = urljoin(base_url, href)
-                if is_valid_url(full_url) and full_url.startswith(base_url):
-                    links.add(clean_url(full_url))
+    # Backup approach for article content
+    content_div = soup.find('div', class_='posts-holder')
+    if content_div:
+        content_links = content_div.find_all('a', href=True)
+        print(f"Found {len(content_links)} content links")  # Debug
+        for link in content_links:
+            try:
+                href = link.get('href')
+                if href and not href.startswith('#'):
+                    full_url = urljoin(base_url, href)
+                    if is_valid_url(full_url) and full_url.startswith(base_url):
+                        links.add(clean_url(full_url))
+            except Exception as e:
+                print(f"Error processing content link: {str(e)}")  # Debug
+
+    print(f"Total unique links found: {len(links)}")  # Debug
+    for link in links:
+        print(f"Found link: {link}")  # Debug
 
     return links
 
@@ -339,16 +357,14 @@ def discover_site_content(driver_pool, base_url, progress, dynamic_limit=None):
             
             # Process found links
             for link in initial_links:
-                if link.startswith(base_url) and not is_unwanted_link(link, base_url):
+                if link.startswith(base_url):
                     content_type = classify_url(link)
                     clean_link = clean_url(link)
-                    if clean_link not in processed_urls:
-                        content_map[content_type].add(clean_link)
-                        processed_urls.add(clean_link)
-                        progress.increment_stat('pages_discovered')
-            
-            progress.update_stats('links_found', len(initial_links))
-            
+                    content_map[content_type].add(clean_link)
+                    processed_urls.add(clean_link)
+                    progress.increment_stat('pages_discovered')
+                    progress.log(f"Added link to content map: {clean_link}")
+    
     except Exception as e:
         progress.log(f"Error in initial discovery: {str(e)}")
 
