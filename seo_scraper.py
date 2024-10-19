@@ -226,90 +226,42 @@ def classify_url(url):
         return 'page'
 
 def find_all_links(soup, base_url):
-    """Enhanced link finding with debug logging"""
+    """Universal link discovery that works across different site structures"""
     links = set()
     
-    if not soup or not base_url:
-        return links
-
-    # Find article links specifically from blog cards
-    blog_cards = soup.find_all(class_='blog-card')
-    print(f"Found {len(blog_cards)} blog cards")  # Debug
+    # Find all links regardless of class/structure
+    all_links = soup.find_all('a', href=True)
     
-    for card in blog_cards:
-        try:
-            href = card.get('href')
-            if href:
-                full_url = urljoin(base_url, href)
-                if is_valid_url(full_url):
-                    links.add(clean_url(full_url))
-        except Exception as e:
-            print(f"Error processing blog card: {str(e)}")  # Debug
-
-    # Try finding article links directly
-    article_links = soup.find_all('a', class_='card-title')
-    print(f"Found {len(article_links)} card titles")  # Debug
-    
-    for link in article_links:
+    for link in all_links:
         try:
             href = link.get('href')
-            if href:
+            if href and not href.startswith(('#', 'javascript:', 'mailto:', 'tel:')):
                 full_url = urljoin(base_url, href)
-                if is_valid_url(full_url):
+                if is_valid_url(full_url) and full_url.startswith(base_url):
                     links.add(clean_url(full_url))
         except Exception as e:
-            print(f"Error processing card title: {str(e)}")  # Debug
-
-    # Backup approach for article content
-    content_div = soup.find('div', class_='posts-holder')
-    if content_div:
-        content_links = content_div.find_all('a', href=True)
-        print(f"Found {len(content_links)} content links")  # Debug
-        for link in content_links:
-            try:
-                href = link.get('href')
-                if href and not href.startswith('#'):
-                    full_url = urljoin(base_url, href)
-                    if is_valid_url(full_url) and full_url.startswith(base_url):
-                        links.add(clean_url(full_url))
-            except Exception as e:
-                print(f"Error processing content link: {str(e)}")  # Debug
-
-    print(f"Total unique links found: {len(links)}")  # Debug
-    for link in links:
-        print(f"Found link: {link}")  # Debug
+            print(f"Error processing link: {str(e)}")
 
     return links
 
+
+
 def handle_cookie_consent(driver):
-    """Handle common cookie consent popups"""
-    consent_selectors = [
-        '#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll',
-        '.cookie-accept', 
-        '#accept-cookies',
-        '[aria-label="Accept cookies"]',
-        '#onetrust-accept-btn-handler',
-        '.consent-accept', 
-        '.accept-all',
-        '[data-testid="cookie-accept"]',
-        'button[contains(text(), "Accept")]',
-        'button[contains(text(), "I accept")]',
-        'button[contains(text(), "Allow")]',
-        '.cc-accept',
-        '.cc-allow',
-        '#gdpr-accept',
-        '.privacy-accept',
-        '#cookie-notice-accept-button',
-        '.cookie-consent-accept'
+    """Handle various cookie consent popup patterns"""
+    consent_buttons = [
+        'accept', 'agree', 'continue', 'got it', 'allow', 'consent',
+        'accept all', 'allow all', 'accept cookies'
     ]
     
-    for selector in consent_selectors:
+    for text in consent_buttons:
         try:
-            button = WebDriverWait(driver, 1).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
-            )
-            driver.execute_script("arguments[0].click();", button)
-            return
+            buttons = driver.find_elements(By.XPATH, 
+                f"//*[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '{text}')]")
+            for button in buttons:
+                if button.is_displayed():
+                    button.click()
+                    time.sleep(1)
+                    return
         except:
             continue
 
@@ -453,7 +405,60 @@ def discover_site_content(driver_pool, base_url, progress, dynamic_limit=None):
     
     return content_map
 
+def wait_for_dynamic_content(driver, attempts=3):
+    """Wait for dynamic content to load by monitoring DOM changes"""
+    last_height = driver.execute_script("return document.body.scrollHeight")
+    
+    for _ in range(attempts):
+        # Scroll and wait for content
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+        
+        # Check for DOM changes
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            break
+        last_height = new_height
+
 def extract_content(driver_pool, url, content_type, base_url, exclude_types):
+    """Extract content from any webpage structure"""
+    content = []
+    driver = driver_pool.get_driver()
+    
+    try:
+        driver.get(url)
+        handle_cookie_consent(driver)
+        wait_for_dynamic_content(driver)
+        
+        # Get main content
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        
+        # Extract text content from article/main/div elements
+        main_elements = soup.find_all(['article', 'main', 'div'])
+        for element in main_elements:
+            if should_exclude(element):
+                continue
+                
+            # Get all text nodes
+            for text_node in element.find_all(text=True, recursive=True):
+                if text_node.parent.name not in ['script', 'style', 'meta']:
+                    text = clean_text(text_node)
+                    if text and len(text) > 20:  # Filter meaningful content
+                        content.append(f"[TEXT] {text}\n")
+                        
+            # Get all links
+            if 'links' not in exclude_types:
+                for link in element.find_all('a', href=True):
+                    href = link.get('href')
+                    if href and is_valid_url(href):
+                        content.append(f"[LINK] {href}\n")
+                        
+    except Exception as e:
+        content.append(f"[ERROR] Failed to extract content: {str(e)}\n")
+    finally:
+        driver_pool.return_driver(driver)
+        
+    return content
     """Optimized content extraction"""
     content = []
     driver = driver_pool.get_driver()
