@@ -282,6 +282,24 @@ def find_all_links(soup, base_url):
 
     return links
 
+def parallel_initial_discovery(url, session):
+    """Parallel processing for initial content discovery"""
+    try:
+        response = session.get(url, timeout=5)
+        if response.ok:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            links = find_all_links(soup, url)  # This now returns cleaned URLs
+            content_type = classify_url(url)
+            return {
+                'url': clean_url(url),  # Clean the URL
+                'links': links,
+                'content_type': content_type,
+                'success': True
+            }
+    except:
+        pass
+    return {'url': url, 'links': set(), 'content_type': None, 'success': False}
+
 class DriverPool:
     """Thread-safe pool of WebDriver instances"""
     def __init__(self, size=3):
