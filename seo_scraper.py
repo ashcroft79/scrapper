@@ -215,41 +215,60 @@ def gather_page_content(driver, base_url):
     
     return list(links)
 
-def load_more_content(driver, base_url):
-    """Load content using multiple strategies"""
+def log_progress(progress_bar, message):
+    """Append new message to progress display"""
+    if 'messages' not in st.session_state:
+        st.session_state.messages = []
+    st.session_state.messages.append(f"{datetime.now().strftime('%H:%M:%S')} - {message}")
+    progress_bar.markdown("\n".join(st.session_state.messages))
+
+def load_more_content(driver, base_url, progress_bar):
+    """Load content using multiple strategies with progress logging"""
     all_links = set()
     page_unchanged_count = 0
-    max_unchanged = 3  # Stop if content hasn't changed after 3 attempts
+    max_unchanged = 3
+    
+    log_progress(progress_bar, f"Starting content discovery on {base_url}")
     
     while page_unchanged_count < max_unchanged:
         # Get current links
+        log_progress(progress_bar, "Gathering current page content...")
         current_links = set(gather_page_content(driver, base_url))
         new_links = current_links - all_links
         
+        log_progress(progress_bar, f"Found {len(new_links)} new links")
+        
         if not new_links:
             page_unchanged_count += 1
+            log_progress(progress_bar, f"No new content found (attempt {page_unchanged_count}/{max_unchanged})")
         else:
             page_unchanged_count = 0
             all_links.update(new_links)
         
         # Strategy 1: Check pagination info
+        log_progress(progress_bar, "Checking for pagination...")
         pagination = find_pagination_info(driver, base_url)
         if pagination['next_links']:
-            for link in pagination['next_links'][:5]:  # Limit to prevent infinite loops
+            log_progress(progress_bar, f"Found pagination with {len(pagination['next_links'])} additional pages")
+            for link in pagination['next_links'][:5]:
                 try:
+                    log_progress(progress_bar, f"Navigating to page: {link}")
                     driver.get(link)
                     time.sleep(2)
                     all_links.update(gather_page_content(driver, base_url))
-                except:
+                except Exception as e:
+                    log_progress(progress_bar, f"Error accessing pagination: {str(e)}")
                     continue
-            break  # Exit if we found and processed pagination
+            break
         
         # Strategy 2: Try infinite scroll
+        log_progress(progress_bar, "Attempting infinite scroll...")
         last_height = driver.execute_script("return document.body.scrollHeight")
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(3)
         
         # Strategy 3: Look for load more buttons
+        log_progress(progress_bar, "Looking for 'Load More' buttons...")
         load_more_selectors = [
             ".load-more", "#load-more", "[class*='load-more']",
             "button:contains('Load More')", "a:contains('Load More')",
@@ -257,17 +276,75 @@ def load_more_content(driver, base_url):
             ".js-load-more", ".infinite-loader", ".pagination__next"
         ]
         
+        button_found = False
         for selector in load_more_selectors:
             try:
                 elements = driver.find_elements(By.CSS_SELECTOR, selector)
                 for element in elements:
                     if element.is_displayed():
+                        log_progress(progress_bar, f"Found and clicking '{selector}' button")
                         driver.execute_script("arguments[0].click();", element)
                         time.sleep(3)
+                        button_found = True
             except:
                 continue
+        
+        if not button_found:
+            log_progress(progress_bar, "No load more buttons found")
     
+    log_progress(progress_bar, f"Content discovery complete. Found {len(all_links)} total links")
     return list(all_links)
+
+def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, target_date, progress_bar):
+    """Main scraping function with progress logging"""
+    visited = set()
+    all_content = []
+    
+    log_progress(progress_bar, f"Initializing scraper for {base_url}")
+    
+    options = create_chrome_options()
+    driver = webdriver.Chrome(service=Service(), options=options)
+    try:
+        log_progress(progress_bar, "Loading initial page...")
+        driver.get(initial_url)
+        time.sleep(2)
+        log_progress(progress_bar, "Beginning content discovery...")
+        all_links = load_more_content(driver, base_url, progress_bar)
+        log_progress(progress_bar, f"Found {len(all_links)} links to process")
+    except Exception as e:
+        log_progress(progress_bar, f"Error during initial page load: {str(e)}")
+        driver.quit()
+        return []
+    finally:
+        driver.quit()
+    
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_url = {}
+        for url in all_links:
+            if max_urls is None or len(visited) < max_urls:
+                if url not in visited and not is_unwanted_link(url, base_url):
+                    visited.add(url)
+                    future_to_url[executor.submit(scrape_single_page, url, base_url, exclude_types)] = url
+
+        log_progress(progress_bar, f"Processing {len(future_to_url)} pages...")
+        completed = 0
+        for future in as_completed(future_to_url):
+            url = future_to_url[future]
+            try:
+                content = future.result()
+                completed += 1
+                log_progress(progress_bar, f"Processed ({completed}/{len(future_to_url)}): {url}")
+                if content:
+                    st.session_state.scraped_urls.append(url)
+                    all_content.extend([f"\n[URL] {url}\n"])
+                    all_content.extend(content)
+                else:
+                    log_progress(progress_bar, f"No content extracted from: {url}")
+            except Exception as e:
+                log_progress(progress_bar, f"Error scraping {url}: {str(e)}")
+
+    log_progress(progress_bar, f"Scraping complete. Processed {len(visited)} pages.")
+    return all_content
 
 def extract_content(driver, base_url, exclude_types):
     """Extract content using multiple strategies"""
@@ -374,6 +451,10 @@ def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, targ
 def main():
     st.title("Advanced Web Scraper for Competitor Analysis")
 
+    # Clear previous messages when starting new scrape
+    if 'messages' in st.session_state:
+        del st.session_state.messages
+
     url = st.text_input("Enter the website URL to scrape:")
     max_depth = st.number_input("Enter the maximum depth to scrape:", min_value=0, max_value=5, value=1, step=1)
     max_urls = st.number_input("Maximum number of URLs to scrape (leave blank for no limit):", min_value=1, value=None)
@@ -391,12 +472,12 @@ def main():
             return
         
         st.info("Scraping in progress...")
-        progress_bar = st.empty()
+        progress_container = st.empty()
         st.session_state.scraped_urls = []
         
         try:
             target_date = datetime.combine(date_filter, datetime.min.time()) if date_filter else None
-            content = scrape_pages(url, url, max_depth, exclude_types, max_urls, target_date, progress_bar)
+            content = scrape_pages(url, url, max_depth, exclude_types, max_urls, target_date, progress_container)
             
             if content:
                 filename = f"{urlparse(url).netloc}_analysis.txt"
