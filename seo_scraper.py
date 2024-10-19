@@ -226,10 +226,10 @@ def classify_url(url):
         return 'page'
 
 def find_all_links(soup, base_url):
-    """Universal link discovery that works across different site structures"""
+    """Universal link discovery with pagination support"""
     links = set()
     
-    # Find all links regardless of class/structure
+    # Find all links regardless of structure
     all_links = soup.find_all('a', href=True)
     
     for link in all_links:
@@ -241,7 +241,7 @@ def find_all_links(soup, base_url):
                     links.add(clean_url(full_url))
         except Exception as e:
             print(f"Error processing link: {str(e)}")
-
+            
     return links
 
 
@@ -406,19 +406,56 @@ def discover_site_content(driver_pool, base_url, progress, dynamic_limit=None):
     return content_map
 
 def wait_for_dynamic_content(driver, attempts=3):
-    """Wait for dynamic content to load by monitoring DOM changes"""
-    last_height = driver.execute_script("return document.body.scrollHeight")
+    """Enhanced dynamic content detection including pagination and infinite scroll"""
+    
+    # Common pagination selectors
+    pagination_selectors = [
+        '.pagination', 
+        'nav[aria-label*="pagination"]',
+        '[class*="pagination"]',
+        '.load-more',
+        '.infinite-scroll',
+        '[data-page]',
+        '.next',
+        '[rel="next"]'
+    ]
+    
+    # Track initial content state
+    initial_content = driver.page_source
+    scroll_position = 0
     
     for _ in range(attempts):
-        # Scroll and wait for content
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # 1. Check for clickable pagination
+        for selector in pagination_selectors:
+            try:
+                pagination_elements = driver.find_elements(By.CSS_SELECTOR, selector)
+                for element in pagination_elements:
+                    if element.is_displayed() and element.is_enabled():
+                        try:
+                            element.click()
+                            time.sleep(2)  # Wait for content load
+                            return True
+                        except:
+                            continue
+            except:
+                continue
+                
+        # 2. Try infinite scroll
+        last_height = driver.execute_script("return document.documentElement.scrollHeight")
+        driver.execute_script(f"window.scrollTo(0, {last_height})")
         time.sleep(2)
         
-        # Check for DOM changes
-        new_height = driver.execute_script("return document.body.scrollHeight")
-        if new_height == last_height:
+        # 3. Check for new content
+        new_content = driver.page_source
+        new_height = driver.execute_script("return document.documentElement.scrollHeight")
+        
+        if new_content != initial_content or new_height > last_height:
+            initial_content = new_content
+            continue
+        else:
             break
-        last_height = new_height
+            
+    return False
 
 def extract_content(driver_pool, url, content_type, base_url, exclude_types):
     """Extract content from any webpage structure"""
