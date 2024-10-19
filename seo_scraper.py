@@ -12,6 +12,7 @@ from urllib.parse import urljoin, urlparse
 import re
 import json
 import time
+import hashlib
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -23,6 +24,61 @@ def create_chrome_options():
     # Enable CDP
     options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
     return options
+
+def is_valid_url(url):
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
+
+def clean_text(text):
+    return re.sub(r'\s+', ' ', text).strip()
+
+def should_exclude(element):
+    exclude_classes = ['nav', 'menu', 'footer', 'sidebar', 'advertisement', 'cookie', 'popup']
+    exclude_ids = ['nav', 'menu', 'footer', 'sidebar', 'ad']
+    
+    cookie_keywords = [
+        'cookie', 'gdpr', 'privacy', 'tracking', 'analytics', 'consent',
+        'session', 'storage', 'duration', 'browser', 'local storage',
+        'pixel tracker', 'http cookie'
+    ]
+    
+    text = element.get_text().lower()
+    if any(keyword in text for keyword in cookie_keywords):
+        return True
+
+    for parent in element.parents:
+        if parent.has_attr('class'):
+            if any(cls in parent.get('class', []) for cls in exclude_classes):
+                return True
+        if parent.has_attr('id'):
+            if any(id in parent.get('id', '') for id in exclude_ids):
+                return True
+    
+    return False
+
+def is_blog_post(text):
+    blog_keywords = ['blog', 'post', 'article', 'news']
+    return any(keyword in text.lower() for keyword in blog_keywords)
+
+def is_after_date(text, target_date):
+    date_pattern = r'\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},\s+\d{4}\b'
+    match = re.search(date_pattern, text)
+    if match:
+        date_str = match.group(0)
+        date = datetime.strptime(date_str, '%b %d, %Y')
+        return date >= target_date
+    return True
+
+def is_unwanted_link(url, base_url):
+    unwanted_patterns = [
+        '/cookie-policy', '/privacy-policy', '/terms-and-conditions',
+        '/about-us', '/contact', '/careers', '/sitemap'
+    ]
+    is_external = not url.startswith(base_url)
+    return any(pattern in url.lower() for pattern in unwanted_patterns) or is_external
 
 def analyze_browser_logs(driver):
     """Analyze browser logs for XHR requests"""
@@ -121,7 +177,8 @@ def gather_page_content(driver, base_url):
     selectors = [
         "article a", "div.post a", ".blog-post a",
         "h2 a", "h3 a", ".title a",
-        "[class*='article'] a", "[class*='post'] a"
+        "[class*='article'] a", "[class*='post'] a",
+        ".card-title", ".entry-title a"
     ]
     
     for selector in selectors:
@@ -196,7 +253,8 @@ def load_more_content(driver, base_url):
         load_more_selectors = [
             ".load-more", "#load-more", "[class*='load-more']",
             "button:contains('Load More')", "a:contains('Load More')",
-            "[class*='infinite-scroll']", ".next", ".more"
+            "[class*='infinite-scroll']", ".next", ".more",
+            ".js-load-more", ".infinite-loader", ".pagination__next"
         ]
         
         for selector in load_more_selectors:
@@ -210,8 +268,6 @@ def load_more_content(driver, base_url):
                 continue
     
     return list(all_links)
-
-# Keep your existing helper functions (is_valid_url, clean_text, should_exclude, etc.)
 
 def extract_content(driver, base_url, exclude_types):
     """Extract content using multiple strategies"""
@@ -315,7 +371,64 @@ def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, targ
 
     return all_content
 
-# Your existing main() function remains the same
+def main():
+    st.title("Advanced Web Scraper for Competitor Analysis")
+
+    url = st.text_input("Enter the website URL to scrape:")
+    max_depth = st.number_input("Enter the maximum depth to scrape:", min_value=0, max_value=5, value=1, step=1)
+    max_urls = st.number_input("Maximum number of URLs to scrape (leave blank for no limit):", min_value=1, value=None)
+    date_filter = st.date_input("Only include content published after (leave blank for no filter):", value=None)
+    
+    exclude_types = st.multiselect(
+        "Select content types to exclude:",
+        ['text', 'links', 'images', 'blog posts'],
+        default=[]
+    )
+    
+    if st.button("Scrape"):
+        if not is_valid_url(url):
+            st.error("Please enter a valid URL.")
+            return
+        
+        st.info("Scraping in progress...")
+        progress_bar = st.empty()
+        st.session_state.scraped_urls = []
+        
+        try:
+            target_date = datetime.combine(date_filter, datetime.min.time()) if date_filter else None
+            content = scrape_pages(url, url, max_depth, exclude_types, max_urls, target_date, progress_bar)
+            
+            if content:
+                filename = f"{urlparse(url).netloc}_analysis.txt"
+                with open(filename, "w", encoding="utf-8") as f:
+                    for line in content:
+                        if 'blog posts' in exclude_types and is_blog_post(line):
+                            continue
+                        f.write(line)
+                
+                st.success(f"Analysis completed! Content saved to {filename}")
+                
+                with open(filename, "r", encoding="utf-8") as f:
+                    file_content = f.read()
+                
+                st.download_button(
+                    label="Download Content",
+                    data=file_content,
+                    file_name=filename,
+                    mime="text/plain"
+                )
+                
+                st.subheader("Preview of Extracted Content")
+                st.text_area("Content Preview", value="".join(content[:20]), height=300)
+                
+                st.subheader("Scraped URLs")
+                for url in st.session_state.scraped_urls:
+                    st.write(url)
+            else:
+                st.warning("No content could be extracted. Please check the URL and try again.")
+            
+        except Exception as e:
+            st.error(f"Error during scraping: {str(e)}")
 
 if __name__ == "__main__":
     main()
