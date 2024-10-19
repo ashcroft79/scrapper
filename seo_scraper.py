@@ -110,303 +110,312 @@ def analyze_browser_logs(driver):
             
     return content_endpoints
 
-def find_pagination_info(driver, base_url):
-    """Find pagination information using various methods"""
-    pagination_info = {
-        'next_links': [],
-        'total_pages': None,
-        'current_page': None
-    }
+def classify_url(url):
+    """Classify URL by content type"""
+    url_lower = url.lower()
     
-    # Check sitemap
-    try:
-        sitemap_url = urljoin(base_url, '/sitemap.xml')
-        response = requests.get(sitemap_url, timeout=5)
-        if response.ok:
-            soup = BeautifulSoup(response.text, 'xml')
-            urls = soup.find_all('url')
-            page_pattern = re.compile(r'page/\d+|page=\d+')
-            pagination_info['next_links'].extend([
-                url.find('loc').text for url in urls 
-                if url.find('loc') and page_pattern.search(url.find('loc').text)
-            ])
-    except:
-        pass
-    
-    # Check DOM for pagination elements
-    try:
-        pagination_elements = driver.find_elements(
-            By.CSS_SELECTOR, 
-            '.pagination, .nav-links, .pager, [class*="pagination"], [class*="paging"]'
-        )
-        for element in pagination_elements:
-            numbers = re.findall(r'\d+', element.text)
-            if numbers:
-                pagination_info['total_pages'] = max(map(int, numbers))
-                try:
-                    current = element.find_element(
-                        By.CSS_SELECTOR, 
-                        '.current, .active, [aria-current="page"]'
-                    )
-                    if current:
-                        pagination_info['current_page'] = int(re.search(r'\d+', current.text).group())
-                except:
-                    pass
-    except:
-        pass
+    # Document links
+    if any(ext in url_lower for ext in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx']):
+        return 'document'
         
-    return pagination_info
-    
-def gather_page_content(driver, base_url, progress_bar):
-    """Gather content using multiple strategies"""
+    # Image links
+    if any(ext in url_lower for ext in ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp']):
+        return 'image'
+        
+    # Blog/Article patterns
+    if any(pattern in url_lower for pattern in [
+        '/blog/', '/article/', '/post/', '/news/',
+        '/resources/', '/insights/', '/knowledge/'
+    ]):
+        return 'article'
+        
+    # Standard pages
+    return 'page'
+
+def find_all_links(soup, base_url):
+    """Find all valid links on page"""
     links = set()
     
-    log_progress(progress_bar, "Analyzing network requests...")
-    content_endpoints = analyze_browser_logs(driver)
-    for endpoint in content_endpoints:
+    # Standard links
+    for a in soup.find_all('a', href=True):
+        href = a.get('href')
+        full_url = urljoin(base_url, href)
+        if is_valid_url(full_url):
+            links.add(full_url)
+    
+    # Look for links in onclick events
+    onclick_elements = soup.find_all(attrs={"onclick": True})
+    for element in onclick_elements:
+        onclick = element.get('onclick')
+        urls = re.findall(r'(?:href=|window\.location=|redirect\()[\'"](.*?)[\'"]', onclick)
+        for url in urls:
+            full_url = urljoin(base_url, url)
+            if is_valid_url(full_url):
+                links.add(full_url)
+    
+    # Look for links in data attributes
+    data_elements = soup.find_all(attrs=lambda x: any(k.startswith('data-') for k in x.keys()))
+    for element in data_elements:
+        for attr in element.attrs:
+            if attr.startswith('data-'):
+                value = element[attr]
+                if isinstance(value, str) and (value.startswith('http') or value.startswith('/')):
+                    full_url = urljoin(base_url, value)
+                    if is_valid_url(full_url):
+                        links.add(full_url)
+    
+    return links
+
+def find_embedded_content(soup, content_map, base_url):
+    """Find embedded content like images and documents"""
+    
+    # Images
+    for img in soup.find_all('img', src=True):
+        src = img.get('src')
+        if src:
+            full_url = urljoin(base_url, src)
+            if is_valid_url(full_url):
+                content_map['image'].add(full_url)
+    
+    # Document links
+    for a in soup.find_all('a', href=True):
+        href = a.get('href')
+        if href:
+            full_url = urljoin(base_url, href)
+            if any(ext in full_url.lower() for ext in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx']):
+                content_map['document'].add(full_url)
+
+def handle_dynamic_content(driver, base_url, api_endpoints, progress_bar):
+    """Handle dynamically loaded content"""
+    dynamic_content = {
+        'article': set(),
+        'page': set()
+    }
+    
+    for endpoint in api_endpoints:
         try:
             response = requests.get(endpoint, timeout=5)
             if response.ok:
-                try:
-                    data = response.json()
-                    json_str = json.dumps(data)
-                    url_pattern = rf'{base_url}[^"\']*'
-                    found_urls = re.findall(url_pattern, json_str)
-                    links.update(found_urls)
-                except:
-                    pass
+                data = response.json()
+                json_str = json.dumps(data)
+                url_pattern = rf'{base_url}[^"\']*'
+                found_urls = re.findall(url_pattern, json_str)
+                
+                for url in found_urls:
+                    if is_valid_url(url):
+                        content_type = classify_url(url)
+                        if content_type in ['article', 'page']:
+                            dynamic_content[content_type].add(url)
         except:
             continue
     
-    log_progress(progress_bar, "Checking for article elements...")
-    selectors = [
-        "article a", "div.post a", ".blog-post a",
-        "h2 a", "h3 a", ".title a",
-        "[class*='article'] a", "[class*='post'] a",
-        ".card-title", ".entry-title a"
-    ]
+    # Try infinite scroll
+    last_height = driver.execute_script("return document.body.scrollHeight")
+    scroll_attempts = 0
+    max_attempts = 5
     
-    for selector in selectors:
-        try:
-            elements = driver.find_elements(By.CSS_SELECTOR, selector)
-            for element in elements:
-                try:
-                    href = element.get_attribute('href')
-                    if href and is_valid_url(href) and href.startswith(base_url):
-                        links.add(href)
-                except:
-                    continue
-        except:
-            continue
-    
-    log_progress(progress_bar, "Looking for schema.org markup...")
-    try:
-        schema_scripts = driver.find_elements(
-            By.CSS_SELECTOR,
-            'script[type="application/ld+json"]'
-        )
-        for script in schema_scripts:
-            try:
-                data = json.loads(script.get_attribute('innerHTML'))
-                if isinstance(data, dict):
-                    if data.get('@type') in ['Article', 'BlogPosting', 'NewsArticle']:
-                        url = data.get('url')
-                        if url and is_valid_url(url) and url.startswith(base_url):
-                            links.add(url)
-            except:
-                continue
-    except:
-        pass
-    
-    return list(links)
-
-def load_more_content(driver, base_url, progress_bar):
-    """Load content using multiple strategies"""
-    all_links = set()
-    page_unchanged_count = 0
-    max_unchanged = 3
-    
-    log_progress(progress_bar, f"Starting content discovery on {base_url}")
-    
-    while page_unchanged_count < max_unchanged:
-        current_links = set(gather_page_content(driver, base_url, progress_bar))
-        new_links = current_links - all_links
-        
-        if not new_links:
-            page_unchanged_count += 1
-            log_progress(progress_bar, f"No new content found (attempt {page_unchanged_count}/{max_unchanged})")
-        else:
-            page_unchanged_count = 0
-            all_links.update(new_links)
-            log_progress(progress_bar, f"Found {len(new_links)} new links (total: {len(all_links)})")
-        
-        # Try pagination
-        pagination = find_pagination_info(driver, base_url)
-        if pagination['next_links']:
-            log_progress(progress_bar, f"Found pagination with {len(pagination['next_links'])} additional pages")
-            for link in pagination['next_links'][:5]:
-                try:
-                    log_progress(progress_bar, f"Navigating to page: {link}")
-                    driver.get(link)
-                    time.sleep(2)
-                    new_page_links = gather_page_content(driver, base_url, progress_bar)
-                    all_links.update(new_page_links)
-                except Exception as e:
-                    log_progress(progress_bar, f"Error accessing pagination: {str(e)}")
-                    continue
-            break
-        
-        # Try infinite scroll
-        log_progress(progress_bar, "Attempting infinite scroll...")
-        last_height = driver.execute_script("return document.body.scrollHeight")
+    while scroll_attempts < max_attempts:
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(3)
         
-        # Try load more buttons
-        log_progress(progress_bar, "Looking for 'Load More' buttons...")
-        load_more_selectors = [
-            ".load-more", "#load-more", "[class*='load-more']",
-            "button:contains('Load More')", "a:contains('Load More')",
-            "[class*='infinite-scroll']", ".next", ".more",
-            ".js-load-more", ".infinite-loader", ".pagination__next"
-        ]
-        
-        button_found = False
-        for selector in load_more_selectors:
-            try:
-                elements = driver.find_elements(By.CSS_SELECTOR, selector)
-                for element in elements:
-                    if element.is_displayed():
-                        log_progress(progress_bar, f"Found and clicking '{selector}' button")
-                        driver.execute_script("arguments[0].click();", element)
-                        time.sleep(3)
-                        button_found = True
-            except:
-                continue
-        
-        if not button_found:
-            log_progress(progress_bar, "No load more buttons found")
-            
-        # Check if scrolling made a difference
         new_height = driver.execute_script("return document.body.scrollHeight")
-        if new_height == last_height and not button_found:
-            page_unchanged_count += 1
+        if new_height == last_height:
+            scroll_attempts += 1
+        else:
+            scroll_attempts = 0
+            last_height = new_height
+            
+            # Get new content after scroll
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+            links = find_all_links(soup, base_url)
+            
+            for link in links:
+                if link.startswith(base_url):
+                    content_type = classify_url(link)
+                    if content_type in ['article', 'page']:
+                        dynamic_content[content_type].add(link)
     
-    log_progress(progress_bar, f"Content discovery complete. Found {len(all_links)} total links")
-    return list(all_links)
+    return dynamic_content
+    
+def discover_site_content(driver, base_url, progress_bar):
+    """Comprehensive site content discovery"""
+    content_map = {
+        'page': set(),
+        'article': set(),
+        'document': set(),
+        'image': set(),
+        'api_endpoints': set()
+    }
+    
+    visited = set()
+    to_visit = {base_url}
+    
+    log_progress(progress_bar, "Starting comprehensive site discovery...")
+    
+    while to_visit:
+        current_url = to_visit.pop()
+        if current_url in visited:
+            continue
+            
+        visited.add(current_url)
+        log_progress(progress_bar, f"Exploring: {current_url}")
+        
+        try:
+            driver.get(current_url)
+            time.sleep(2)
+            
+            # Check for dynamic content loading
+            api_endpoints = analyze_browser_logs(driver)
+            content_map['api_endpoints'].update(api_endpoints)
+            
+            if api_endpoints:
+                log_progress(progress_bar, f"Found {len(api_endpoints)} API endpoints")
+                dynamic_results = handle_dynamic_content(driver, base_url, api_endpoints, progress_bar)
+                for content_type, urls in dynamic_results.items():
+                    content_map[content_type].update(urls)
+            
+            # Get all links from current page
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+            links = find_all_links(soup, base_url)
+            
+            # Classify and store links
+            for link in links:
+                if link.startswith(base_url) and link not in visited:
+                    content_type = classify_url(link)
+                    content_map[content_type].add(link)
+                    if content_type in ['page', 'article']:
+                        to_visit.add(link)
+            
+            # Look for embedded content
+            find_embedded_content(soup, content_map, base_url)
+            
+            log_progress(progress_bar, f"Found {sum(len(v) for v in content_map.values())} total items")
+            
+        except Exception as e:
+            log_progress(progress_bar, f"Error processing {current_url}: {str(e)}")
+            continue
+    
+    return content_map
 
-def extract_content(driver, base_url, exclude_types):
-    """Extract content using multiple strategies"""
+def extract_content(driver, url, base_url, exclude_types):
+    """Extract content from a single page"""
     content = []
     
-    content_selectors = [
-        "article", ".post", ".content", 
-        "[class*='article']", "[class*='post']",
-        "main", "#main", ".main"
-    ]
-    
-    for selector in content_selectors:
-        try:
-            WebDriverWait(driver, 5).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, selector))
-            )
-            break
-        except:
-            continue
-    
-    soup = BeautifulSoup(driver.page_source, 'html.parser')
-    
-    schema_elements = soup.find_all('script', type='application/ld+json')
-    for element in schema_elements:
-        try:
-            data = json.loads(element.string)
-            if isinstance(data, dict):
-                if 'articleBody' in data:
-                    content.append(f"[ARTICLE] {data['articleBody']}\n")
-                if 'description' in data:
-                    content.append(f"[DESCRIPTION] {data['description']}\n")
-        except:
-            continue
-    
-    for element in soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'a']):
-        if should_exclude(element):
-            continue
-
-        if element.name in ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li']:
-            if 'text' not in exclude_types:
-                text = clean_text(element.get_text())
-                if text and len(text) > 20:
-                    content.append(f"[{element.name.upper()}] {text}\n")
-        elif element.name == 'a' and 'links' not in exclude_types:
-            href = element.get('href')
-            if href:
-                if href.startswith(('http', 'https')):
-                    content.append(f"[EXTERNAL LINK] {href}\n")
-                elif href.startswith('/'):
-                    content.append(f"[INTERNAL LINK] {urljoin(base_url, href)}\n")
-    
-    return content
-
-def scrape_single_page(url, base_url, exclude_types):
-    """Scrape a single page"""
-    options = create_chrome_options()
-    driver = webdriver.Chrome(service=Service(), options=options)
     try:
         driver.get(url)
         time.sleep(2)
-        return extract_content(driver, base_url, exclude_types)
-    finally:
-        driver.quit()
+        
+        content_type = classify_url(url)
+        log_prefix = f"[{content_type.upper()}]"
+        content.append(f"{log_prefix} URL: {url}\n")
+        
+        # Handle different content types
+        if content_type == 'document':
+            content.append(f"{log_prefix} Document Link: {url}\n")
+            return content
+            
+        if content_type == 'image':
+            content.append(f"{log_prefix} Image Link: {url}\n")
+            return content
+        
+        # For articles and pages, extract text content
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        
+        # Try to get structured data first
+        schema_elements = soup.find_all('script', type='application/ld+json')
+        for element in schema_elements:
+            try:
+                data = json.loads(element.string)
+                if isinstance(data, dict):
+                    if 'articleBody' in data:
+                        content.append(f"[ARTICLE_BODY] {data['articleBody']}\n")
+                    if 'description' in data:
+                        content.append(f"[DESCRIPTION] {data['description']}\n")
+            except:
+                continue
+        
+        # Extract main content
+        for element in soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'a']):
+            if should_exclude(element):
+                continue
+
+            if element.name in ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li']:
+                if 'text' not in exclude_types:
+                    text = clean_text(element.get_text())
+                    if text and len(text) > 20:
+                        content.append(f"[{element.name.upper()}] {text}\n")
+            elif element.name == 'a' and 'links' not in exclude_types:
+                href = element.get('href')
+                if href:
+                    if href.startswith(('http', 'https')):
+                        content.append(f"[EXTERNAL_LINK] {href}\n")
+                    elif href.startswith('/'):
+                        content.append(f"[INTERNAL_LINK] {urljoin(base_url, href)}\n")
+        
+        return content
+        
+    except Exception as e:
+        content.append(f"[ERROR] Failed to extract content: {str(e)}\n")
+        return content
 
 def scrape_pages(base_url, initial_url, max_depth, exclude_types, max_urls, target_date, progress_bar):
     """Main scraping function"""
-    visited = set()
     all_content = []
     
     log_progress(progress_bar, f"Initializing scraper for {base_url}")
     
     options = create_chrome_options()
     driver = webdriver.Chrome(service=Service(), options=options)
+    
     try:
-        log_progress(progress_bar, "Loading initial page...")
-        driver.get(initial_url)
-        time.sleep(2)
-        log_progress(progress_bar, "Beginning content discovery...")
-        all_links = load_more_content(driver, base_url, progress_bar)
-        log_progress(progress_bar, f"Found {len(all_links)} links to process")
+        # Discover all site content first
+        content_map = discover_site_content(driver, base_url, progress_bar)
+        
+        total_urls = sum(len(urls) for content_type, urls in content_map.items())
+        log_progress(progress_bar, f"Content discovery complete. Found {total_urls} items to process")
+        
+        # Process discovered content
+        processed_urls = set()
+        urls_to_process = []
+        
+        # Prioritize articles and pages
+        urls_to_process.extend(content_map['article'])
+        urls_to_process.extend(content_map['page'])
+        urls_to_process.extend(content_map['document'])
+        urls_to_process.extend(content_map['image'])
+        
+        if max_urls:
+            urls_to_process = urls_to_process[:max_urls]
+        
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            future_to_url = {}
+            for url in urls_to_process:
+                if url not in processed_urls and not is_unwanted_link(url, base_url):
+                    processed_urls.add(url)
+                    future_to_url[executor.submit(extract_content, driver, url, base_url, exclude_types)] = url
+
+            completed = 0
+            total = len(future_to_url)
+            for future in as_completed(future_to_url):
+                url = future_to_url[future]
+                try:
+                    content = future.result()
+                    completed += 1
+                    log_progress(progress_bar, f"Processed ({completed}/{total}): {url}")
+                    if content:
+                        st.session_state.scraped_urls.append(url)
+                        all_content.extend(content)
+                except Exception as e:
+                    log_progress(progress_bar, f"Error scraping {url}: {str(e)}")
+
     except Exception as e:
-        log_progress(progress_bar, f"Error during initial page load: {str(e)}")
-        driver.quit()
+        log_progress(progress_bar, f"Error during scraping: {str(e)}")
         return []
+        
     finally:
         driver.quit()
-
-    with ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_url = {}
-        for url in all_links:
-            if max_urls is None or len(visited) < max_urls:
-                if url not in visited and not is_unwanted_link(url, base_url):
-                    visited.add(url)
-                    future_to_url[executor.submit(scrape_single_page, url, base_url, exclude_types)] = url
-
-        log_progress(progress_bar, f"Processing {len(future_to_url)} pages...")
-        completed = 0
-        for future in as_completed(future_to_url):
-            url = future_to_url[future]
-            try:
-                content = future.result()
-                completed += 1
-                log_progress(progress_bar, f"Processed ({completed}/{len(future_to_url)}): {url}")
-                if content:
-                    st.session_state.scraped_urls.append(url)
-                    all_content.extend([f"\n[URL] {url}\n"])
-                    all_content.extend(content)
-                else:
-                    log_progress(progress_bar, f"No content extracted from: {url}")
-            except Exception as e:
-                log_progress(progress_bar, f"Error scraping {url}: {str(e)}")
-
-    log_progress(progress_bar, f"Scraping complete. Processed {len(visited)} pages.")
+    
+    log_progress(progress_bar, "Scraping complete")
     return all_content
 
 def main():
